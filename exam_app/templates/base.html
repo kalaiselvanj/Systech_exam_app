@@ -1,0 +1,572 @@
+{% load static %} {% block html %}
+<!DOCTYPE html>
+<html lang="en">
+  {% block head %}
+  <head>
+    <style>
+      /* Google Font Import - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root{
+    /* ===== Colors ===== */
+    --body-color: #EDEFF6;
+    --sidebar-color: #FFFFFF;
+    --primary-color: #695CFE;
+    --primary-color-light: #695CFE;
+    --toggle-color: #CCCCCC;
+    --text-color: #FDFDFD;
+
+    /* ====== Transition ====== */
+    --tran-03: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.3s ease;
+    --tran-05: all 0.3s ease;
+}
+
+body{
+    min-height: 100vh;
+    background-color: var(--body-color);
+    transition: var(--tran-05);
+}
+
+::selection{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+body.dark{
+    --body-color: #18191a;
+    --sidebar-color: #242526;
+    --primary-color: #3a3b3c;
+    --primary-color-light: #3a3b3c;
+    --toggle-color: #fff;
+    --text-color: #ccc;
+}
+
+/* ===== Sidebar ===== */
+ .sidebar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background: #2c3e50;
+    transition: var(--tran-05);
+    z-index: 100;  
+}
+.sidebar.close{
+    width: 88px;
+}
+
+/* ===== Reusable code - Here ===== */
+.sidebar li{
+    height: 50px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.sidebar header .image,
+.sidebar .icon{
+    min-width: 60px;
+    border-radius: 6px;
+}
+
+.sidebar .icon{
+    min-width: 60px;
+    border-radius: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.sidebar .text,
+.sidebar .icon{
+    color: var(--text-color);
+    transition: var(--tran-03);
+}
+
+.sidebar .text{
+    font-size: 14px;
+    font-weight: 300;
+    white-space: nowrap;
+    opacity: 1;
+}
+.sidebar.close .text{
+    opacity: 0;
+}
+/* =========================== */
+
+.sidebar header{
+    position: relative;
+}
+
+.sidebar header .image-text{
+    display: flex;
+    align-items: center;
+}
+.sidebar header .logo-text{
+    display: flex;
+    flex-direction: column;
+}
+header .image-text .name {
+    margin-top: 2px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+header .image-text .profession{
+    font-size: 16px;
+    margin-top: -2px;
+    display: block;
+}
+
+.sidebar header .image{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar header .image img{
+    width: 40px;
+    border-radius: 6px;
+}
+
+.sidebar header .toggle{
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%) rotate(180deg);
+    height: 25px;
+    width: 25px;
+    background-color: black;
+    color: var(--sidebar-color);
+    border-radius:50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: var(--tran-05);
+}
+
+body.dark .sidebar header .toggle{
+    color: var(--text-color);
+}
+
+.sidebar.close .toggle{
+    transform: translateY(-50%) rotate(0deg);
+}
+
+.sidebar .menu{
+    margin-top: 40px;
+}
+
+.sidebar li.search-box{
+    border-radius: 6px;
+    background-color: var(--primary-color-light);
+    cursor: pointer;
+    transition: var(--tran-05);
+}
+
+.sidebar li.search-box input{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 500;
+    transition: var(--tran-05);
+}
+.sidebar li a{
+    list-style: none;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: var(--tran-03);
+}
+
+.sidebar li a.active {
+    background-color: #1ABC9C;
+    }
+
+.sidebar li a:active {
+    padding: 10px; /* add padding to cover the text fully */
+    height: 100%;
+    width: 100%;
+    background-color: #1ABC9C;
+  }
+  
+
+.sidebar li a:hover{
+    padding: 10px; /* add padding to cover the text fully */
+    height: 100%;
+    width: 100%;
+    background-color: #1ABC9C;
+}
+
+  
+
+.sidebar li a:hover .icon,
+.sidebar li a:hover .text{
+    color: var(--sidebar-color);
+    padding: 10px; /* add padding to cover the text fully */
+  
+}
+body.dark .sidebar li a:hover .icon,
+body.dark .sidebar li a:hover .text{
+    color: var(--text-color);
+    padding: 10px; /* add padding to cover the text fully */
+
+
+}
+
+.sidebar .menu-bar{
+    height: calc(100% - 55px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: scroll;
+}
+.menu-bar::-webkit-scrollbar{
+    display: none;
+}
+.sidebar .menu-bar .mode{
+    border-radius: 6px;
+    background-color: var(--primary-color-light);
+    position: relative;
+    transition: var(--tran-05);
+}
+
+.menu-bar .mode .sun-moon{
+    height: 50px;
+    width: 60px;
+}
+
+.mode .sun-moon i{
+    position: absolute;
+}
+.mode .sun-moon i.sun{
+    opacity: 0;
+}
+body.dark .mode .sun-moon i.sun{
+    opacity: 1;
+}
+body.dark .mode .sun-moon i.moon{
+    opacity: 0;
+}
+
+.menu-bar .bottom-content .toggle-switch{
+    position: absolute;
+    right: 0;
+    height: 100%;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.toggle-switch .switch{
+    position: relative;
+    height: 22px;
+    width: 40px;
+    border-radius: 25px;
+    background-color: var(--toggle-color);
+    transition: var(--tran-05);
+}
+
+.switch::before{
+    content: '';
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background-color: var(--sidebar-color);
+    transition: var(--tran-04);
+}
+
+body.dark .switch::before{
+    left: 20px;
+}
+
+.home{
+    position: absolute;
+    top: 0;
+    top: 0;
+    left: 250px;
+    height: 100vh;
+    width: calc(100% - 250px);
+    background-color: #cecece;
+    background-size: cover;
+    transition: var(--tran-05);
+}
+.home .text{
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--text-color);
+    padding: 12px 60px;
+}
+
+.sidebar.close ~ .home{
+    left: 78px;
+    height: 100vh;
+    width: calc(100% - 78px);
+}
+body.dark .home .text{
+    color: var(--text-color);
+}
+
+    </style>
+    <meta charset="UTF-8" />
+    <meta content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="{% static 'css/bootstrap-grid.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap-grid.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap-grid.rtl.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'css/bootstrap-grid.rtl.min.css' %}"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/bootstrap-reboot.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap-reboot.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap-reboot.rtl.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'css/bootstrap-reboot.rtl.min.css' %}"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/bootstrap-utilities.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'css/bootstrap-utilities.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'css/bootstrap-utilities.rtl.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'css/bootstrap-utilities.rtl.min.css' %}"
+      rel="stylesheet"
+    />
+    <!-- <link href="{% static 'css/boxicons.min.css' %}" rel="stylesheet" /> -->
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet" />
+    <!-- <link href="{% static 'css/fontawesome-all.min.css' %}" rel="stylesheet"/> -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+    <!-- 
+    <link href="{% static 'css/animation.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/asColorPicker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/fullcalendar.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/calendar.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/responsive.bootstrap4.min.css' %}" rel="stylesheet"/>
+    
+    <link href="{% static 'css/jquery.gritter.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/jquery.minicolors.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/jquery.steps.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/magnific-popup.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/materialdesignicons.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/multicheck.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/perfect-scrollbar.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/quill.core.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/quill.snow.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/steps.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/themify-icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/toastr.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/weather-icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/weather-icons.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/float-chart.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet"/> -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    
+  </head>
+  {% endblock head %} {% block body %}
+  <body>
+    <div class="d-flex flex-row">
+ 
+        <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                  <a class="navbar-brand" href="{% url 'dashboard' %}">
+                    <img
+                      src="{% static 'images/systech-logo.png' %}"
+                      class="d-inline-block align-top rounded-circle box"
+                      alt="My Logo"
+                    />
+                  </a>
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">Hi {{ request.session.username }}</span>
+                </div>
+            </div>
+
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+                <li class="bottom-content"> 
+                    <a href="{% url 'dashboard' %}"> 
+                        <i class='bx bx-home-alt icon' ></i> 
+                        <span class="text nav-text">Dashboard</span> 
+                    </a> 
+                </li> 
+
+                <li class="bottom-content"> 
+                    <a href="{% url 'candidate_dashboard' %}"> 
+                        <i class='bx bx-user icon'></i> 
+                        <span class="text nav-text">Candidate Dashboard</span> 
+                    </a> 
+                </li> 
+                
+                <li class="bottom-content"> 
+                    <a href="{% url 'jobposition' %}"> 
+                        <i class="bx bx-briefcase-alt-2 icon"></i> 
+                        <span class="text nav-text">Job Position</span> 
+                    </a> 
+                </li> 
+                
+                <li class="bottom-content"> 
+                    <a href="{% url 'subject' %}"> 
+                        <i class="bx bx-book-open icon"></i> 
+                        <span class="text nav-text">Subjects</span> 
+                    </a> 
+                </li> 
+                
+                <li class="bottom-content"> 
+                    <a href="{% url 'skill_set_config' %}"> 
+                        <i class="bx bx-bar-chart-alt icon"></i> 
+                        <span class="text nav-text">Skill Set Configuration</span> 
+                    </a> 
+                </li> 
+                
+                <li class="bottom-content"> 
+                    <a href="{% url 'quest_bank' %}"> 
+                        <i class='bx bx-notepad icon' ></i> 
+                        <span class="text nav-text">Quest Bank</span> 
+                    </a> 
+                </li> 
+                
+                <li class="bottom-content">
+                     <a href="{% url 'result' %}"> 
+                        <i class='bx bx-wallet icon' ></i> 
+                        <span class="text nav-text">Result</span> 
+                    </a> 
+                </li> 
+            </div> 
+            
+            <div class="bottom-content"> 
+                <li class=""> 
+                    <a href="{% url 'logout' %}"> 
+                    <i class='bx bx-log-out icon' ></i> 
+                    <span class="text nav-text">Logout</span> 
+                </a> 
+            </li>
+
+                <!-- <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li> -->
+                
+            </div>
+        </div>
+
+            </nav>
+        
+            <section class="home">
+              <div >
+                {%block content%} 
+        
+                {% endblock %}</div>
+          </section>
+        
+    </div>
+
+    {% block scripts %}
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+    <script>
+      const body = document.querySelector('body'),
+    sidebar = body.querySelector('nav'),
+    toggle = body.querySelector(".toggle"),
+    searchBtn = body.querySelector(".search-box"),
+    modeSwitch = body.querySelector(".toggle-switch"),
+    modeText = body.querySelector(".mode-text");
+
+
+toggle.addEventListener("click" , () =>{
+  sidebar.classList.toggle("close");
+})
+
+searchBtn.addEventListener("click" , () =>{
+  sidebar.classList.remove("close");
+})
+
+modeSwitch.addEventListener("click" , () =>{
+  body.classList.toggle("dark");
+  
+  if(body.classList.contains("dark")){
+      modeText.innerText = "Light mode";
+  }else{
+      modeText.innerText = "Dark mode";
+      
+  }
+});
+  </script>
+
+  <script>
+    // Get the current page URL
+    var currentPageUrl = window.location.href;
+    
+    // Find the link element in the sidebar that matches the current page URL
+    var sidebarLinks = document.querySelectorAll('.sidebar li a');
+    for (var i = 0; i < sidebarLinks.length; i++) {
+      var link = sidebarLinks[i];
+      if (link.href === currentPageUrl) {
+        // Add the "active" class to the link element
+        link.classList.add('active');
+      }
+    }
+  </script>
+    {% endblock scripts %}
+  </body>
+
+  {% endblock body %}
+</html>
+{% endblock html %}

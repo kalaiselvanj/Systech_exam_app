@@ -1,0 +1,114 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<head>  <style>    body
+    {
+        counter-reset: Serial;           /* Set the Serial counter to 0 */
+    }
+    tr td:first-child:before
+    {
+      counter-increment: Serial;      /* Increment the Serial counter */
+      content: counter(Serial); /* Display the counter */
+    }
+    .sticky-thead {
+      position: sticky;
+      top:-1px;
+      z-index: 1;
+    }
+    .table-content {
+      position: relative;
+      padding-top: 50px; /* or add margin-top: 50px; */
+    }
+  </style>
+  </head>
+  <div class="container" style="border-radius: 20px;">
+    <div class="row">
+      <div class="col-12 mt-2 mb-2">
+          <h4>Candiate Details</h4>
+      </div>
+            <div class="table-responsive"  style="height: 90vh; overflow-y: auto; overflow-x: auto;">
+                <div class="container">
+        <form method="get" class="form-inline">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-md-4 d-flex justify-content-start align-items-center">
+                    <label for="applied_for" class="mr-2">Applied For:</label>
+                    <select class="form-select" id="applied_for" name="applied_for" onchange="this.form.submit()">
+                        <option value='All' {% if request.GET.applied_for == 'All' %}selected{% endif %}>All</option>
+                        {% for search in search_filter %}
+                            <option value="{{search.0}}" {% if search.0 == request.GET.applied_for %}selected{% endif %}>{{ search.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-8 d-flex justify-content-end align-items-center">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'generate_excel' %}" class="btn btn-primary mr-2">Export to Excel</a>
+                        <input type="text" id="search-bar" name="search-bar" placeholder="Search..." class="mr-2">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    
+        <form id="checkbox-form" method="post">
+        {% csrf_token %}
+        <table class="table table-bordered text-center">
+            <thead class="sticky-thead">
+                <tr style="background-color: lightblue;">
+                <th>S.No</th>
+                <th>Candidate Name</th>
+                <th>User id</th>
+                <th>Password</th>
+                <th>Applied for</th>
+                <th>Delete</th>
+                
+                </tr>
+            </thead>
+            
+            <tr>
+                {% for candidate in candidate_data%}
+                <td> </td>
+                <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{candidate.1}} {{candidate.2}}</a></td>
+                <td>{{candidate.3}}</td>
+                <td>{{candidate.4}}</td>
+                <td>{{candidate.5}}</td>
+                <td><a href="#delete-modal{{ candidate.0 }}" data-bs-toggle="modal" class="btn btn-danger">Delete</a>
+                    <div class="modal fade" id="delete-modal{{ candidate.0 }}" tabindex="-1" aria-labelledby="confirm-delete-modal-label" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                          <form method="POST" action="{% url 'delete_candidate' id=candidate.0 %}">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                              <div class="d-flex justify-content-between align-items-center w-100">
+                              <h5 class="modal-title" id="confirm-delete-modal-label">Confirm Delete</h5>
+                            </div>
+                            <div>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to Remove <span class="fw-bold">{{candidate.1}}</span>?
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                              <button type="submit" class="btn btn-danger" id="confirm-delete-btn">Yes</button>
+                            </div>
+                          </form>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="10">No candidates found.</td>
+            </tr>
+            
+            {% endfor %}
+            </table>
+        </div>
+        </form>  
+    </div>
+  </div>
+
+{% endblock content %}

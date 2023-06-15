@@ -1,0 +1,108 @@
+{% load static %} 
+<div class="wrapper">
+  <!-- Sidebar Holder -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <a class="navbar-brand" href="{% url 'dashboard' %}">
+        <img
+          src="{% static 'images/systech-logo.png' %}"
+          class="d-inline-block align-top rounded-circle box"
+          alt="My Logo"
+        />
+      </a>
+      <span>Hello {{ request.session.username }}</span> 
+    </div>
+
+    <div class="">
+      <ul class="list-unstyled text-dark">
+        <li class="active">
+          <a
+            href="{% url 'dashboard' %}"
+            class="d-flex align-items-center normal-link"
+          >
+            <img
+              src="{% static 'icons/speedometer2.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Dashboard</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'candidate_dashboard' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/pencil-square.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Candidate Dashboard</span>
+          </a>
+        </li>
+        <li class="active">
+          <a
+            href="{% url 'jobposition' %}"
+            class="d-flex align-items-center normal-link"
+          >
+            <img
+              src="{% static 'icons/grid-3x3-gap.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Job Position</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'subject' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/grid-3x3-gap-fill.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Subjects</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'skill_set_config' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/file-bar-graph.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Skill Set Configuration</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'quest_bank' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/clipboard-data-fill.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Quest Bank</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'result' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/pencil-square.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Result</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{% url 'logout' %}" class="d-flex align-items-center normal-link">
+            <img
+              src="{% static 'icons/box-arrow-right.svg' %}"
+              alt="Icon"
+              class="m-4"
+            />
+            <span class="sidebar-components">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+

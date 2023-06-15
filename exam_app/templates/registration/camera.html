@@ -1,0 +1,233 @@
+{% load static %} 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Live Camera Feed</title>
+
+    <style>
+        /* Style the buttons */
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        /* Style the capture button */
+        #capture-btn {
+            background-color: #008CBA;
+        }
+
+        /* Style the save button */
+        #save-btn {
+            background-color: #f44336;
+        }
+
+        /* Style the back button */
+        .btn-secondary {
+            background-color: #555555;
+        }
+
+        /* Style the video and preview elements */
+        #camera-feed, #preview {
+            width: 100%;
+            height: auto;
+            margin-bottom: 12px;
+        }
+
+        /* Hide the preview element by default */
+        #preview {
+            display: none;
+        }
+
+        #camera-feed {
+            border: 1px solid #ccc;
+          }
+          
+          #preview {
+            border: 1px solid #ccc;
+            max-width: 100%;
+            height: auto;
+          }
+          
+          .col-md-6 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          button {
+            margin: 10px;
+            padding: 10px;
+          }
+
+          #save-btn {
+			display: none;
+		}
+
+          #cam {
+            position: relative;
+          }
+          #cam::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+          }
+          .highlight {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            {% comment %} border: 2px solid red; {% endcomment %}
+          }
+          
+    </style>
+
+</head>
+<body>
+    {% csrf_token %}
+    <div class="col">
+    <div class="row">
+        <div class="col-md-6">
+        <h2>Take the clear picture of your face</h2>
+          <div id="cam">
+            <video id="camera-feed" width="100%" height="auto"></video>
+            <img src="{% static 'images/facial_outline.png' %}" class="highlight">
+          </div>
+          <div>
+            <button id="capture-btn">Capture</button>
+          </div>
+        </div>
+        <div class="col-md-6">
+        <h2 id= "preview-h2" hidden>Preview</h2>
+          <div>
+            <img id="preview" src="#" alt="Preview Image" style="display: none;">
+          </div>
+          <div>
+            <button id="save-btn">Save</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+      
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    // Get the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var video = document.getElementById('camera-feed');
+    var canvas = document.createElement('canvas');
+    var captureButton = document.getElementById('capture-btn');
+    var saveButton = document.getElementById('save-btn');
+    var previewImage = document.getElementById('preview');
+
+    // Check if getUserMedia() is available
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Access the user's camera and display the live feed
+        navigator.mediaDevices.getUserMedia({video: true})
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.error('Unable to access camera: ' + err);
+            });
+
+        // Attach an event listener to the capture button
+        captureButton.addEventListener('click', function() {
+            // Set the canvas dimensions to match the video stream
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw the current frame of the video stream onto the canvas
+            var context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas data to a data URL
+            var dataURL = canvas.toDataURL('image/png');
+
+            // Preview the captured image
+            previewImage.src = dataURL;
+            previewImage.style.display = 'block';
+
+            var previewContainer = document.getElementById('preview-h2');
+            previewContainer.removeAttribute('hidden');
+            saveButton.style.display = 'block';
+
+            // Change the text on the capture button to "Recapture"
+            captureButton.textContent = "Recapture";
+        });
+
+        // Attach an event listener to the save button
+        saveButton.addEventListener('click', function() {
+            // Get the data URL of the captured image from the preview element
+            var dataURL = previewImage.src;
+
+            // Send the data URL to the server to save the image
+            $.ajax({
+                url: '{% url "save_image" %}',
+                type: 'POST',
+                data: {
+                    image: dataURL,
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                success: function(response) {
+                    console.log('Image saved successfully.');
+                    window.alert('Image saved successfully!');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving image: ' + error);
+                }
+            });
+
+            // Store image data in session storage
+            sessionStorage.setItem('FaceimageData', dataURL);
+
+            history.back()
+
+        });
+    } else {
+        console.error('getUserMedia() is not supported in this browser.');
+    }
+</script>
+
+    
+</body>
+</html>

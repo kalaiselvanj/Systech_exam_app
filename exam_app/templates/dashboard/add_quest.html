@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+  <style>
+    .card {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .btn-primary {
+      background: #1ABC9C;
+      color: #fff;
+      border: none;
+      border-radius:0px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      font-weight: 400;
+      padding: 10px 20px;
+      text-decoration: none;
+    }
+    
+    .btn-primary:hover {
+      background: #1ABC9C;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-primary:active {
+      box-shadow: none;
+      transform: translateY(2px);
+    }
+    .btn-secondary {
+      background: #2c3e50;
+      color: #fff;
+      border: none;
+      border-radius:0px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      font-weight: 400;
+      padding: 10px 20px;
+      text-decoration: none;
+    }
+    
+    .btn-secondary:hover {
+      background: #2c3e50;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-secondary:active {
+      box-shadow: none;
+      transform: translateY(2px);
+    }
+  </style>
+</head>
+<div class="container">
+  <h4 class="mb-4 m-2">New Question</h4>
+  <div class="card" style="background-color:#f8f9fa;">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row mb-4">
+          
+          <div class="col-sm-6">
+            <label class="col-sm-6 col-form-label">Subject:</label>
+            <select class="form-control" name="subject" required>
+              <option value="">-- Select Subject --</option>
+              {% for subject in subjects %}
+                <option value="{{subject.0}}">{{subject.1}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="col-sm-6">
+            <label class="col-sm-6 col-form-label">Level:</label>
+            <select class="form-control" name="level" required>
+              <option value="">-- Select Level --</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label>Question</label>
+          <textarea name="question" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="form-group row mb-3">
+          <div class="col-sm-6">
+            <label>Option 1</label>
+            <input type="text" name="option1" class="form-control" required>
+          </div>
+          <div class="col-sm-6">
+            <label>Option 2</label>
+            <input type="text" name="option2" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group row mb-3">
+          <div class="col-sm-6">
+            <label>Option 3</label>
+            <input type="text" name="option3" class="form-control" required>
+          </div>
+          <div class="col-sm-6">
+            <label>Option 4</label>
+            <input type="text" name="option4" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-6">
+          <label>Answer</label>
+          <input type="text" name="answer" class="form-control" required>
+        </div>
+        </div>
+        <div class="form-group d-flex justify-content-between m-4">
+          <button type="submit" class="btn btn-primary">Add Question</button>
+          <a href="{% url 'quest_bank' %}" class="btn btn-secondary">May Be Later</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

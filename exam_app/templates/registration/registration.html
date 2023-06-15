@@ -1,0 +1,848 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            * {
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            }
+            body{
+            font-family: Calibri, Helvetica, sans-serif !important;
+            border: 1px solid #ddd !important;
+            background-color: white;
+            }
+            label.required::after {
+            content: "*";
+            color: red !important;
+            }
+            input, select {
+            border: 1px solid #ddd !important;
+            width: 100% ;
+            border: 1px solid #ddd !important;
+            display: block ;
+            border: 1px solid #ddd !important;
+            height: 35px !important;
+            box-sizing: border-box !important;
+            padding: 0 10px !important;
+            border-radius: 5px !important;
+            outline: none !important;
+            }
+            hr {
+            border: 1px solid #f1f1f1 !important;
+            margin-bottom: 25px !important;
+            }
+            .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            }
+            .registerbtn {
+            background-color: #4CAF50 !important;
+            color: white !important;
+            padding: 16px 20px !important;
+            margin: 8px 0 !important;
+            border: none !important;
+            cursor: pointer !important;
+            width: 100% !important;
+            opacity: 0.9 !important;
+            }
+            .registerbtn:hover {
+            opacity: 1 !important;
+            }
+            .head{
+            width:100% !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            }
+            .head2{
+            width:100% !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: start !important;
+            align-items: center !important;
+            }
+            .heading{
+            width:100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            align-items: start !important;
+            }
+            button[type="submit"] {
+            background-color: blue !important;
+            color: white !important;
+            width: 100px !important;
+            height: 40px !important;
+            border-radius: 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: none !important;
+            outline: none !important;
+            cursor: pointer !important;
+            }
+            button[type="submit"]:hover {
+            background-color: darkblue !important;
+            }
+            .button {
+            display: inline-block !important;
+            padding: 8px 16px !important;
+            background-color: #4CAF50 !important;
+            color: white !important;
+            text-decoration: none !important;
+            border-radius: 4px !important;
+            transition: background-color 0.3s ease !important;
+    
+            }
+            .button:hover {
+            background-color: #3e8e41 !important;
+            }
+            /*  */
+            .bg-container {
+            padding: 0 50px !important;
+            background-color: white !important;
+            }
+            .container {
+            padding: 15px !important;
+            background: lightgray !important;
+            border-radius: 5px !important;
+            border-top: 2px solid DodgerBlue !important;
+            }
+            .container2 {
+            padding: 15px !important;
+            
+            
+            }
+            .sub-heading {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin: 20px 0 7px !important;
+            }
+            .input-label {
+            margin-bottom: 4px !important;
+            font-size: 14px !important;
+            display: inline-block !important;
+            margin-top: 10px !important;
+            font-weight: 400 !important;
+            }
+            .garduation-heading {
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            }
+            .garduation-heading:not(:first-child) {
+            margin: 20px 0 0 !important;
+            }
+            .country-code-ctr {
+            width: 120px !important;
+            margin-right: 5px !important;
+            }
+            .phone-number-ctr {
+            width: calc(100% - 125px) !important;
+            }
+            .col-md-4 {
+            margin: 0 !important;
+            flex: 0 0 33.33% !important;
+            padding: 0 5px !important;
+            max-width: 33.33% !important;
+            }
+            .col-md-3 {
+            flex: 0 0 25% !important;
+            padding: 5px !important;
+            max-width: 25% !important;
+            }
+            .col-md-row-5 {
+            flex: 0 0 20% !important;
+            padding: 5px !important;
+            max-width: 20% !important;
+            }
+            .mt-0 {
+            margin-top: 0 !important;
+            }
+            @media (max-width: 767px) {
+            .bg-container {
+            padding: 0 15px !important;
+            }
+            .container {
+            padding: 15px 15px 25px !important;
+            }
+            .head, .head2{
+            flex-wrap: wrap !important;
+            }
+            .col-md-4, .col-md-3, .col-md-row-5 {
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+            }
+            .heading {
+            width: 50% !important;
+            max-width: 50% !important;
+            padding: 10px 5px !important;
+            }
+            .validation-message { 
+                color: red; 
+                display: block; 
+            }
+            }
+        </style>
+    </head>
+    <body>
+        <form method="POST" action="" onsubmit="return validateForm() " >
+            {% csrf_token %}
+            <div class="bg-container">
+                <div class="row">
+                    <div class="head">
+                        <div style="padding:10px;border: 2px solid #ADD8E6;border-bottom-right-radius: 20px;border-top-left-radius:20px ;">
+                            <img src="{% static 'images/systech-logo.png' %}" alt="Systech" width="100" height="100">
+                        </div>
+                        <div>
+                            <center>
+                                <h1> Register</h1>
+                                <h2> Here</h2>
+                            </center>
+                        </div>
+                    </div>
+                    <hr style="width:100% ">
+                    <div class="sub-heading">Job Details</div>
+                    <div class="container">
+                        <div class="col-md-4">
+                            <label class="input-label" for="Applyingfor">   
+                            Applying for<span style="color:red">*</span>
+                            </label>  
+                            <select id="Applyingfor" name="Applyingfor" required >
+                                <option value="" disabled selected hidden>Select option</option>
+                                {% for job in jobs %}             
+                                <option value="{{job.0}}">{{ job.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Personal Details</div>
+                    <div class="container">
+                        <div class="row">
+                            <div  style="background:LightGray;">
+                                <div class="head">
+                                    <div class="col-md-4">
+                                        <label class="input-label"  for="firstname"> First Name<span style="color:red">*</span>
+                                        </label>   
+                                        <input type="text" name="firstname"  id="firstname" placeholder="First  Name " size="15"  required>
+                                    </div>
+                                    <div class="col-md-4"> 
+                                        <label class="input-label" for="lastname"> Last Name<span style="color:red">*</span>
+                                        </label>    
+                                        <input type="text" name="lastname" id="lastname" placeholder=" Last  Name" size="15"  required  >
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        <label class="input-label" for="email" > Email<span style="color:red">*</span> 
+                                        </label>      
+                                        <input type="email" id="email" name="email" placeholder="Enter Email" size="15"   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required >
+                                    </div>
+                                </div>
+                                <div class="head">
+                                    <div class="col-md-4">
+                                        <label class="input-label" for="gender" >   
+                                        Gender<span style="color:red">*</span>
+                                        </label>
+                                        <select required name="gender"  id="gender"  >
+                                            <option value="" disabled selected hidden>Select option</option>
+                                            <option value="Male" >Male
+                                            </option>
+                                            <option value="Female"  >Female
+                                            </option>
+                                            <option value="Transgender"  >Transgender
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="input-label" for="dob">Date Of Birth<span style="color:red">*</span></label>
+                                        <input type="date" id="dob" name="dob" size="15"  onchange="checkAge(event)" required >
+                                        
+                                        <span id="age-validation-message" ></span>
+                                      </div> 
+                                    
+                                    <div class="col-md-4">
+                                        <label class="input-label" for="MaritalStatus">   
+                                        Marital Status<span style="color:red">*</span>
+                                        </label>
+                                        <select  name="MaritalStatus" id="MaritalStatus"  required >
+                                            <option value="" disabled selected hidden>Select option</option>
+                                            <option value="Yes" >Married
+                                            </option>
+                                            <option value="No" >Single
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="head " >
+                                    <div class="head2 col-md-4"   >
+                                        <div class="country-code-ctr" >
+                                            <label class="input-label" for="country_code">Country code<span style="color:red">*</span></label>
+                                            <select name="country_code" id="country_code" required >
+                                                <option value="" disabled selected hidden>Select option</option>
+                                                {% for code, name,lable,phone_code in countries %}
+                                                <option value="+{{phone_code }}">{{name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="phone-number-ctr " >
+                                            <label class="input-label" for="phone">Phone number<span style="color:red">*</span></label>
+                                            <input type="tel" id="phone" name="phone" placeholder="Enter phone number" pattern = "[0-9]{10}"  title="Please enter a valid phone number (eg.1234567890)" required >
+                                            <span class="error-msg"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="input-label" for="CAddress"> Current Address<span style="color:red">*</span> 
+                                        </label>   
+                                        <input type="text" name="CAddress" id="CAddress" placeholder="Address" size="15" required >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="input-label" for="PAddress"> Permanent Address<span style="color:red">*</span>
+                                        </label>   
+                                        <input type="text" name="PAddress" id="PAddress" placeholder="Address" size="15" required  > 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Education Details</div>
+                    <div class="container">
+                        <h1 class="garduation-heading">10th
+                        </h1>
+                        <div class="head">
+                            <div class="col-md-4">
+                                <label class="input-label" for="Institution10"> Institution<span style="color:red">*</span>
+                                </label>   
+                                <input type="text" name="Institution10" id="Institution10" placeholder="Institution" size="15" required >
+                            </div>
+                            <div class="col-md-4">
+                                <label class="input-label" for="CGPA10"> % (or) CGPA<span style="color:red">*</span>
+                                </label>   
+                                <input type="text" name="CGPA10" id="CGPA10" placeholder="Enter CGPA" size="15" oninput="validateCGPA(this)" required > 
+                                
+                            </div>
+                            <div class="col-md-4" >
+                                <label class="input-label" for="YOP10"> Year of passing<span style="color:red">*</span>
+                                </label>    
+                                <select name="YOP10"  id="YOP10" placeholder="Enter YOP"  required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+                        <h1 class="garduation-heading">12th or Diploma
+                        </h1>
+                        <div class="head">
+                            <div  class="col-md-3">
+                                <label class="input-label" for="Institution12"> Institution<span style="color:red">*</span> 
+                                </label>   
+                                <input type="text" name="Institution12" id="Institution12" placeholder="Institution" size="15" required >
+                            </div>
+                            <div class="col-md-3">
+                                <label class="input-label" for="CGPA12"> % (or) CGPA<span style="color:red">*</span>
+                                </label>   
+                                <input type="text" name="CGPA12" id="CGPA12" placeholder="Enter CGPA" size="15" oninput="validateCGPA(this)" required  > 
+                                <span class="validation-message"></span>
+                            </div>
+                            <div class="col-md-3"> 
+                                <label class="input-label" for="YOP12"> Year of passing<span style="color:red">*</span>
+                                </label>    
+                                <select name="YOP12"  id="YOP12" placeholder="Enter YOP" onchange="validateForm(event)" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="year-validation-message"></span>
+                            </div>
+                            <div class="col-md-3"> 
+                                <label class="input-label" for="Branch12"> Branch<span style="color:red">*</span>
+                                </label>    
+                                <input type="text" name="Branch12" id="Branch12" placeholder="Enter Branch" size="15" required>
+                            </div>
+                        </div>
+                        <h1 class="garduation-heading"> Under Graduation
+                        </h1>
+                        <div class="head">
+                            <div class="col-md-row-5">
+                                <label class="input-label" for="Graduation"> UG Graduation<span style="color:red">*</span>
+                                </label>   
+                                <select  name="Graduation" id="Graduation"  required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for degree in ug %}
+                                    <option value="{{degree.1}}" >{{degree.1}}
+                                    </option>
+                                    {% endfor %}   
+                                </select>
+                            </div>
+                            <div  class="col-md-row-5">
+                                <label class="input-label" for="UGDiscipline"> UG Discipline<span style="color:red">*</span>
+                                </label>   
+                                <select  name="UGDiscipline"  id="UGDiscipline"  required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for i in branch %}
+                                    <option value="{{i.1}}" >{{i.1}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="UGCollege"> College<span style="color:red">*</span>
+                                </label>    
+                                <input type="text" name="UGCollege" id="UGCollege" placeholder="Enter College" size="15" required >
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="CGPAUG"> % (or) CGPA<span style="color:red">*</span>
+                                </label>    
+                                <input type="text" name="CGPAUG" id="CGPAUG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)" required  >
+  
+
+                                <span class="validation-message"></span>
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="YOPUG"> Year of passing<span style="color:red">*</span>
+                                </label>    
+                                <select name="YOPUG"  id="YOPUG" placeholder="Enter YOP" onchange="validateForm_2(event)" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="byear-validation-message"></span>
+                                
+                            </div>
+                        </div>
+                        <h1 class="garduation-heading">Post Graduation
+                        </h1>
+                        <div class="head" >
+                            <div  class="col-md-row-5">
+                                <label class="input-label" for="PGraduation"> PG Graduation
+                                </label>   
+                                <select  name="PGraduation"   id="PGraduation" >
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for degree in pg %}
+                                    <option value="{{degree.1}}" >{{degree.1}}
+                                    </option>
+                                    {% endfor %}    
+                                </select>
+                            </div>
+                            <div  class="col-md-row-5">
+                                <label class="input-label" for="PGDiscipline"> PG Discipline
+                                </label>   
+                                <select  name="PGDiscipline" id="PGDiscipline"  >
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for i in branch %}
+                                    <option value="{{i.1}}" >{{i.1}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="PGCollege"> College
+                                </label>    
+                                <input type="text" name="PGCollege" id="PGCollege" placeholder="Enter College" size="15"  >
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="CGPAPG"> % (or) CGPA
+                                </label>    
+                                <input type="text" name="CGPAPG" id="CGPAPG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)" >
+                                <span class="validation-message"></span>
+                            </div>
+                            <div  class="col-md-row-5"> 
+                                <label class="input-label" for="YOPPG"> Year of passing 
+                                </label>    
+                                <select name="YOPPG"  id="YOPPG" placeholder="Enter YOP" onchange="validateForm_3(event)" >
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="pyear-validation-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Other Details</div>
+                    <div class="container">
+                        <div class="head">
+                            <div class="col-md-3">
+                                <label class="input-label mt-0" name='Source' >   
+                                Source<span style="color:red">*</span>
+                                </label>
+                                <div>
+                                    <select  name="Source" id="Source" required  >
+                                        <option value="" disabled selected hidden>Select option</option>
+                                        <option value="Media Platforms">Media Platforms
+                                        </option>
+                                        <option value="Reference">Reference
+                                        </option>
+                                        <option value="Reference">Advertisements 
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3" >
+                                <label class="input-label mt-0" name="Referredthrough"> Referred through<span style="color:red">*</span>
+                                </label>   
+                                <input type="text" name="Referredthrough" id="Referredthrough" placeholder="Name (or) Emp-Id " size="15" required > 
+                            </div>
+                            <div class="col-md-3">
+                                <label class="input-label mt-0" name="Applied"> Is Applied?<span style="color:red">*</span> 
+                                </label>    
+                                <div>
+                                    <select  name="Applied" id="Applied" required >
+                                        <option value="" disabled selected hidden>Select option</option>
+                                        <option value="1">Yes
+                                        </option>
+                                        <option value="0">No
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3" id="date-container" style="display:none";>
+                                <label class="input-label mt-0" for="Adate">Date:</label>
+                                <input type="date" id="Adate" name="Adate">
+                                <span id="date-validation-message" style="color:red;"></span>
+                              </div>
+                            <!-- <div id="date-container" class="col-md-3" style="display:none">
+                                <label class="input-label mt-0" for="Adate">Date:</label>
+                                <input  type="date" id="Adate" name="Adate"  >
+                            </div>  
+                            -->
+                        </div>
+                    </div>
+                    <div class="sub-heading">ID_Proof_Details</div>
+                    <div class="container" >
+                        <div class="head2">
+                           
+                            <div class="head2" >
+                                <!-- <div class='heading' > 
+                                    <span style="color:red">*</span></label>         
+                                    <a href="{% url 'capture_card' %}" class="button" >id proof</a>          
+                                    <img id="cardImage" src="#" name="iddata" value={{CardimageData}} alt="" style="width:100px; height:100px; margin-top:15px;">
+                                    <input type="hidden" name="card_image_data" id="cardImageDataField">  
+                                </div>
+                                <div class='heading'>          
+                                    <a href="{% url 'capture' %}" class="button">face</a>          
+                                    <img id="faceImage" src="#" name="facedata" value={{FaceimageData}} alt="" style="width:100px; height:100px; margin-top:15px;">
+                                    <input type="hidden" name="face_image_data" id="faceImageDataField">              
+                                </div> -->
+                                <div class='heading'>
+                                    <label for="cardImageDataField">
+                                      <span style="color:red">*</span>
+                                    </label>
+                                    <a href="{% url 'capture_card' %}" class="button">id proof</a>
+                                    <img id="cardImage" src="#" name="iddata" value={{CardimageData}} alt="" style="width:100px; height:100px; margin-top:15px;">
+                                    <input type="hidden" name="card_image_data" id="cardImageDataField" required>
+                                  </div>
+                                  <div class='heading'>
+                                    <label for="faceImageDataField">
+                                      <span style="color:red">*</span>
+                                    </label>
+                                    <a href="{% url 'capture' %}" class="button">face</a>
+                                    <img id="faceImage" src="#" name="facedata" value={{FaceimageData}} alt="" style="width:100px; height:100px; margin-top:15px;">
+                                    <input type="hidden" name="face_image_data" id="faceImageDataField" required>
+                                  </div>
+                                  
+
+                            
+                            </div>
+                            <div class="heading  col-md-4">
+                                <label class="input-label" for="Id_proof">Type Of Id_proof<span style="color:red">*</span></label>
+                                <select name="Id_proof"  id="Id_proof" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    <option value="PAN CARD">PAN CARD</option> 
+                                    <option value="AADHAR">AADHAR</option>
+                                    <option value="DRIVING LICENSE">DRIVING LICENSE</option>
+                                    <option value="PASSPORT">PASSPORT</option>
+                                </select>
+                            </div>
+                            <div class="heading col-md-4" >
+                                <label class="input-label" for="ID_NO" id="idNoLabel">ID_NO<span style="color:red">*</span></label>
+                                <input type="text" name="ID_NO" id="ID_NO" size="15" placeholder="Enter ID_NO"  pattern=""  required />
+                                <span class="error-message" id="idNoErrorMessage"></span>
+                            </div>
+                              
+                        </div>
+                    </div>
+                    <div class="container2" style="text-align: center;margin-top: 20px">
+                        <button type="submit" id="reg_sub" style="background-color: blue; width: 100px; height: 20px; border-radius: 10px; color: white; font-weight: bold; border: none; text-shadow: 1px 1px 1px #333;;">Submit</button>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
+<script>
+    const phoneInput = document.getElementById('phone');
+    const errorMsg = document.querySelector('.error-msg');
+
+    phoneInput.addEventListener('input', function(event) {
+    if (phoneInput.validity.patternMismatch) {
+        errorMsg.textContent = 'Please enter a valid phone number with 10 digits';
+    } else {
+        errorMsg.textContent = '';
+    }
+    });
+    var submitButton = document.getElementById('reg_sub'); 
+    var appliedDropdown = document.getElementById("Applied");
+    var dateContainer = document.getElementById("date-container");
+    
+    appliedDropdown.addEventListener("change", function() {
+      if (appliedDropdown.value == "1") {
+        dateContainer.style.display = "block";
+      } else {
+        dateContainer.style.display = "none";
+      }
+    });
+    const idProofDropdown = document.getElementById("Id_proof");
+    const idNoInputContainer = document.getElementById("idNoInputContainer");
+    const idNoInput = document.getElementById("ID_NO");
+    const idNoLabel = document.getElementById("idNoLabel");
+    const idNoErrorMessage = document.getElementById("idNoErrorMessage");
+
+    idProofDropdown.addEventListener("change", () => {
+    const selectedOption = idProofDropdown.value;
+
+    switch (selectedOption) {
+        case "PAN CARD":
+        idNoLabel.textContent = "PAN CARD Number";
+        idNoInput.placeholder = "ABCDE1234A";
+        idNoInput.pattern = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
+        break;
+
+        case "AADHAR":
+        idNoLabel.textContent = "AADHAR Number";
+        idNoInput.placeholder = "012345678911";
+        idNoInput.pattern = "^[0-9]{12}$";
+        break;
+
+        case "DRIVING LICENSE":
+        idNoLabel.textContent = "Driving License Number";
+        idNoInput.placeholder = "AP0123456789111";
+        idNoInput.pattern = "^[A-Z]{2}-[0-9]{13}$";
+        break;
+
+        case "PASSPORT":
+        idNoLabel.textContent = "Passport Number";
+        idNoInput.placeholder = "A1234567";
+        idNoInput.pattern = "^[A-Z]{1}[0-9]{7}$";
+        break;
+
+        default:
+        idNoLabel.textContent = "ID Number";
+        idNoInput.placeholder = "";
+        idNoInput.pattern = "";
+        idNoErrorMessage.textContent = "";
+        break;
+    }
+
+    if (selectedOption === "") {
+        idNoInputContainer.style.display = "none";
+    } else {
+        idNoInputContainer.style.display = "block";
+    }
+    });
+
+    idNoInput.addEventListener("input", () => {
+    const selectedOption = idProofDropdown.value;
+    let errorMessage = "";
+
+    switch (selectedOption) {
+        case "PAN CARD":
+        errorMessage = "Please enter a valid PAN CARD number (e.g. ABCDE1234A)";
+        break;
+
+        case "AADHAR":
+        errorMessage = "Please enter a valid AADHAR number (e.g. 012345678911)";
+        break;
+
+        case "DRIVING LICENSE":
+        errorMessage = "Please enter a valid Driving License number (e.g. AP-0123456789111)";
+        break;
+
+        case "PASSPORT":
+        errorMessage = "Please enter a valid Passport number (e.g. A1234567)";
+        break;
+
+        default:
+        errorMessage = "";
+        break;
+    }
+
+    if (idNoInput.validity.patternMismatch) {
+        idNoErrorMessage.textContent = errorMessage;
+    } else {
+        idNoErrorMessage.textContent = "";
+    }
+    });
+
+
+
+
+    
+    
+    // Get the data from sessionStorage
+    var CardimageData = sessionStorage.getItem('CardimageData');
+    
+    // Set the image source to the retrieved data
+    if(CardimageData){
+    document.getElementById('cardImage').src = CardimageData;
+    }
+    else{
+    document.getElementById('cardImage').src = "{% static 'images/default_image.jpg' %}";
+    }
+    
+    
+    // Get the data from sessionStorage
+    var FaceimageData = sessionStorage.getItem('FaceimageData');
+    
+    // Set the image source to the retrieved data
+    if(FaceimageData){
+    document.getElementById('faceImage').src = FaceimageData;
+    }
+    else{
+    document.getElementById('faceImage').src = "{% static 'images/default_image.jpg' %}";
+    }
+    
+    
+    document.getElementById('cardImageDataField').value = CardimageData;
+    document.getElementById('faceImageDataField').value = FaceimageData;
+    
+    submitButton.addEventListener('click', function() {
+    sessionStorage.clear();
+    console.log("successful")
+    }); 
+    
+// Get the data from sessionStorage
+var CardimageData = sessionStorage.getItem('CardimageData');
+var FaceimageData = sessionStorage.getItem('FaceimageData');
+
+// Set the image sources to the retrieved data
+if (CardimageData) {
+  document.getElementById('cardImage').src = CardimageData;
+}
+if (FaceimageData) {
+  document.getElementById('faceImage').src = FaceimageData;
+}
+
+// Add event listener to form submit button
+submitButton.addEventListener('click', function(event) {
+  // Prevent form submission if image data is missing
+  if (!CardimageData || !FaceimageData) {
+    event.preventDefault();
+    alert('Please fill all required fields and select both ID proof and face images.');
+  }
+  
+  // Clear sessionStorage
+  sessionStorage.clear();
+});
+
+
+   
+    const dobField = document.getElementById('dob');
+    const dobError = document.getElementById('dob-error');
+    
+    dobField.addEventListener('change', function() {
+        const dob = new Date(this.value);
+        const now = new Date();
+        const diffInMs = now.getTime() - dob.getTime();
+        const diffInYears = diffInMs / (1000 * 60 * 60 * 24 * 365);
+        
+        if (diffInYears < 18) {
+            dobError.style.display = 'block';
+        } else {
+            dobError.style.display = 'none';
+        }
+    });
+    function checkAge(event) {
+    var inputDate = new Date(event.target.value);
+    var today = new Date();
+    var age = today.getFullYear() - inputDate.getFullYear();
+    var monthDiff = today.getMonth() - inputDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < inputDate.getDate())) {
+      age--;
+    }
+
+    if (age < 18) {
+      document.getElementById("age-validation-message").innerHTML = "You must be at least 18 years old.";
+      event.target.setCustomValidity("You must be at least 18 years old.");
+    } else {
+      document.getElementById("age-validation-message").innerHTML = "";
+      event.target.setCustomValidity("");
+    }
+    }
+    function validateForm(event) {
+			var yop10Input = document.getElementById("YOP10");
+			var yop12Input = event.target;
+			var yop10Value = yop10Input.value;
+			var yop12Value = yop12Input.value;
+			if (yop12Value < parseInt(yop10Value) + 2) {
+                    document.getElementById("year-validation-message").innerHTML = "Enter the year greater than 10th by 2 years";
+                    yop12Input.setCustomValidity("Year of passing should be greater than Year of passing 10th by 2 years");
+                } else {
+                    document.getElementById("year-validation-message").innerHTML = "";
+                    yop12Input.setCustomValidity("");
+            }
+
+	}
+    function validateForm_2(event) {
+        var yop12Input = document.getElementById("YOP12");
+        var yopUGInput = event.target;
+        var yop12Value = yop12Input.value;
+        var yopUGValue = yopUGInput.value;
+        if (yopUGValue < parseInt(yop12Value) + 3) {
+                document.getElementById("byear-validation-message").innerHTML = "Enter the year greater than 12th by 3 years";
+                yop12Input.setCustomValidity("Year of passing should be greater than Year of passing 12th by 3 years");
+            } else {
+                document.getElementById("byear-validation-message").innerHTML = "";
+                yop12Input.setCustomValidity("");
+        }
+
+    }
+    function validateForm_3(event) {
+        var yopUGInput = document.getElementById("YOPUG");
+        var yopPGInput = event.target;
+        var yopUGValue = yopUGInput.value;
+        var yopPGValue = yopPGInput.value;
+        if (yopPGValue < parseInt(yopUGValue) + 2) {
+                document.getElementById("pyear-validation-message").innerHTML = "Enter the year greater than UG by 2 years";
+                yop12Input.setCustomValidity("Year of passing should be greater than Year of passing UG by 2 years");
+            } else {
+                document.getElementById("pyear-validation-message").innerHTML = "";
+                yop12Input.setCustomValidity("");
+        }
+
+    }
+   
+
+
+    function validateCGPA(input) {
+        var value = input.value;
+        var messageSpan = input.nextElementSibling;
+        
+        // Check if the value is a number less than or equal to 100
+        if (!isNaN(value) && parseFloat(value) <= 100) {
+          // Clear the validation message if it was previously set
+          messageSpan.textContent = "";
+        } else {
+          // Show the validation message
+          messageSpan.textContent = "Please enter a number less than or equal to 100.";
+        }
+        
+        // Check if the value contains any non-numeric characters
+        if (/[^0-9\.]/.test(value)) {
+          // Show the validation message
+          messageSpan.textContent = "Please enter a valid input.";
+        }
+      }
+
+
+        
+
+</script>
