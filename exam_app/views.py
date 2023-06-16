@@ -1043,6 +1043,25 @@ def dynamic_stream(request,stream_path="video"):
     except :
         return "error"
     
+# define function to generate video frames
+def video_feed():
+    # initialize camera
+    camera = cv2.VideoCapture(0)
+
+    while True:
+        success, frame = camera.read()
+        if not success:
+            break
+        ret, jpeg = cv2.imencode('.jpg', frame)
+        frame = jpeg.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+# decorate video_feed function with gzip compression
+@gzip.gzip_page
+def video(request):
+    return StreamingHttpResponse(video_feed(), content_type='multipart/x-mixed-replace; boundary=frame')
+    
 
 def exam_portal(request):
     global is_recording
