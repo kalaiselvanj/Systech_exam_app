@@ -155,6 +155,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # LOGGING = {
