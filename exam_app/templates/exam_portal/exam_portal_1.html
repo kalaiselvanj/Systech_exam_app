@@ -113,7 +113,7 @@
     </div>
   <div class="col-md-3">
     <div class="row" id="r2">
-      <img src="{% url 'videostream' stream_path='video' %}" class="center" />
+      <video id="video" autoplay></video>
     </div>
     <div class="row" id="r3">
       <h6>Welcome {{ request.session.username }}</h6>
@@ -302,6 +302,42 @@ for (var i = 0; i < radios.length; i++) {
       window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
     }
   });
+</script>
+<script>
+  // Get the video element
+  const video = document.getElementById('video');
+
+  // Check if the browser supports the getUserMedia API
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Get the user's webcam stream
+      navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function(stream) {
+              // Set the video source to the user's webcam stream
+              video.srcObject = stream;
+
+              // Perform face detection on each video frame
+              video.addEventListener('play', function() {
+                  const canvas = document.createElement('canvas');
+                  const context = canvas.getContext('2d');
+                  setInterval(function() {
+                      context.drawImage(video, 0, 0, 640, 480);
+
+                      // Get the image data from the canvas
+                      const imageData = context.getImageData(0, 0, 640, 480);
+                      // Perform face detection on the image data
+                      // Add your face detection code here using JavaScript libraries like face-api.js or TensorFlow.js
+
+                      // Display the detected faces or take further actions
+                      // You can update the canvas or show notifications, etc.
+                  }, 1000 / 30);  // Adjust the interval based on your requirements
+              });
+          })
+          .catch(function(error) {
+              console.error('Error accessing the webcam:', error);
+          });
+  } else {
+      console.error('getUserMedia is not supported by this browser.');
+  }
 </script>
 
 

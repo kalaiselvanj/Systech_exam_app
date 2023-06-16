@@ -1037,7 +1037,7 @@ def gen():
 
         
 @gzip.gzip_page
-def dynamic_stream(request,stream_path="video"):
+def dynamic_stream(request):
     try :
         return StreamingHttpResponse(gen(),content_type="multipart/x-mixed-replace;boundary=frame")
     except :
