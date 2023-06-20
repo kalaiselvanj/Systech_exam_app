@@ -113,7 +113,7 @@
     </div>
   <div class="col-md-3">
     <div class="row" id="r2">
-      <video id="video" autoplay></video>
+      <img src="{% url 'videostream' stream_path='video' %}" class="center" />
     </div>
     <div class="row" id="r3">
       <h6>Welcome {{ request.session.username }}</h6>
