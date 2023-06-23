@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'systech-exam-app'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_098CF8D720A04EFEA5B101B10F947BF7 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7E92DA6D1EFE4B72B43EE60CF68D5BB0 }}
