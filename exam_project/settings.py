@@ -90,14 +90,14 @@ DATABASES = {
         'NAME': 'OLT_DEV',
 
         # String. Database user name in "user" format. If not given then MS Integrated Security will be used.
-        'USER': 'Kalaiselvan',
+        'USER': 'Santosh',
 
         # String. Database user password.
-        'PASSWORD': 'Kalai@512',
+        'PASSWORD': 'Pr@k@sh123',
         
 
          # String. SQL Server instance in "server\instance" format.
-        'HOST': 'systech-exam-app.database.windows.net',
+        'HOST': 'systech-exam-app-prod.database.windows.net',
 
         # String. Server instance port. An empty string means the default port.
         'PORT': '1433',
@@ -168,3 +168,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
 # CSRF_COOKIE_DOMAIN = '.azurewebsites.net'
+
+# Define the VIDEO_DEVICE_INDEX setting
+VIDEO_DEVICE_INDEX = os.environ.get('VIDEO_DEVICE_INDEX', '0')

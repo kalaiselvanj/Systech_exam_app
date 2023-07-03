@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Video Streaming</title>
+</head>
+<body>
+  <h1>Live Video Streaming</h1>
+  <video id="videoElement" autoplay></video>
+  <canvas id="canvasElement"></canvas>
+  <button onclick="startStreaming()">Start Streaming</button>
+  <button onclick="stopStreaming()">Stop Streaming</button>
+
+  <script>
+    let mediaStream;
+    let videoElement = document.getElementById('videoElement');
+    let canvasElement = document.getElementById('canvasElement');
+    let context = canvasElement.getContext('2d');
+
+    async function startStreaming() {
+      try {
+        // Request access to the user's camera
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+        // Display the video stream in the video element
+        videoElement.srcObject = mediaStream;
+
+        console.log('Streaming started.');
+
+        // Start capturing frames and perform face detection
+        const mediaRecorder = new MediaRecorder(mediaStream);
+        mediaRecorder.addEventListener('dataavailable', handleDataAvailable);
+        mediaRecorder.start();
+      } catch (error) {
+        console.error('Error starting the video stream:', error);
+      }
+    }
+
+    function stopStreaming() {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        console.log('Streaming stopped.');
+      }
+    }
+
+    function handleDataAvailable(event) {
+      if (event.data && event.data.size > 0) {
+        // Convert the captured frame to an image and perform face detection
+        const blob = new Blob([event.data], { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const frameImage = new Image();
+        frameImage.src = url;
+        frameImage.onload = function() {
+          context.drawImage(frameImage, 0, 0, canvasElement.width, canvasElement.height);
+
+          // Perform face detection on the canvas image
+          const faceRects = faceDetectionOnCanvas();
+
+          // Draw rectangles around the detected faces
+          faceRects.forEach(rect => {
+            context.beginPath();
+            context.lineWidth = '2';
+            context.strokeStyle = 'red';
+            context.rect(rect.x, rect.y, rect.width, rect.height);
+            context.stroke();
+          });
+        };
+      }
+    }
+
+    function faceDetectionOnCanvas() {
+      // Perform face detection on the canvas image
+      // Implement your face detection algorithm here
+      // This is just a placeholder returning dummy face rectangles
+      return [
+        { x: 100, y: 100, width: 200, height: 200 },
+        { x: 300, y: 150, width: 180, height: 180 }
+      ];
+    }
+  </script>
+</body>
+</html>

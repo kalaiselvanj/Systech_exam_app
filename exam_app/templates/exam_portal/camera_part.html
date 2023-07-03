@@ -1,72 +1,168 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Face Detection with face-api.js</title>
+    <title>Live Video Feed</title>
+    {% comment %} <script>
+        // Function to get the CSRF token from the cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Get access to the user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                // Create a video element to display the video stream
+                var video = document.getElementById('camera-feed');
+                video.srcObject = stream;
+                video.play();
+
+                // Create a canvas element to capture video frames
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+
+                // Function to capture and send frames to the backend
+                function captureAndSendFrame() {
+                    // Set the canvas dimensions to match the video stream
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    // Draw the current frame of the video stream onto the canvas
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Convert the canvas data to a data URL
+                    var imageData = canvas.toDataURL('image/jpeg');
+
+                    // Convert the data URL to a bytes-like object
+                    var encoder = new TextEncoder();
+                    var imageDataBytes = encoder.encode(imageData);
+
+                    // Create a FormData object to send the data
+                    var formData = new FormData();
+                    formData.append('video_stream', new Blob([imageDataBytes], { type: 'application/octet-stream' }));
+
+                    // Send the video frame to the backend
+                    fetch('/process-video-frame/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(function(response) {
+                        if (response.ok) {
+                            // Handle the successful response from the server
+                            console.log('Video frame processed successfully.');
+                        } else {
+                            // Handle the error response from the server
+                            console.error('Error:', response.statusText);
+                        }
+                    })
+                    .catch(function(error) {
+                        // Handle any network or request error
+                        console.error('Error:', error);
+                    });
+
+                    // Capture and send the next frame recursively
+                    requestAnimationFrame(captureAndSendFrame);
+                }
+
+                // Start capturing and sending frames
+                captureAndSendFrame();
+            })
+            .catch(function(error) {
+                console.error('Error accessing webcam:', error);
+            });
+    </script> {% endcomment %}
+    <script>
+        // Function to send the video frame to the backend
+function sendVideoFrame(frameData) {
+    fetch('/process-video-frame/', {
+        method: 'POST',
+        body: frameData,
+        headers: {
+            'Content-Type': 'application/octet-stream'
+        }
+    })
+    .then(function(response) {
+        if (response.ok) {
+            // Handle the successful response from the server
+            console.log('Video frame processed successfully.');
+        } else {
+            // Handle the error response from the server
+            console.error('Error:', response.statusText);
+        }
+    })
+    .catch(function(error) {
+        // Handle any network or request error
+        console.error('Error:', error);
+    });
+}
+
+// Function to capture and send frames to the backend
+function captureAndSendFrame() {
+    // Set the canvas dimensions to match the video stream
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Draw the current frame of the video stream onto the canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert the canvas data to a data URL
+    var imageData = canvas.toDataURL('image/jpeg');
+
+    // Remove the data URL prefix
+    var base64Data = imageData.replace(/^data:image\/(png|jpeg);base64,/, "");
+
+    // Convert the base64-encoded frame to a bytes-like object
+    var bytes = atob(base64Data);
+    var byteNumbers = new Array(bytes.length);
+    for (var i = 0; i < bytes.length; i++) {
+        byteNumbers[i] = bytes.charCodeAt(i);
+    }
+    var byteArray = new Uint8Array(byteNumbers);
+
+    // Send the video frame to the backend
+    sendVideoFrame(byteArray.buffer);
+
+    // Capture and send the next frame recursively
+    requestAnimationFrame(captureAndSendFrame);
+}
+
+// Get access to the user's webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function(stream) {
+        // Create a video element to display the video stream
+        var video = document.getElementById('camera-feed');
+        video.srcObject = stream;
+        video.play();
+
+        // Create a canvas element to capture video frames
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+
+        // Start capturing and sending frames
+        captureAndSendFrame();
+    })
+    .catch(function(error) {
+        console.error('Error accessing webcam:', error);
+    });
+
+    </script>
 </head>
 <body>
-  <h1>Face Detection with face-api.js</h1>
-  <video id="video" width="640" height="480" autoplay></video>
-  <canvas id="canvas" width="640" height="480"></canvas>
-
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-
-  <script>
-    // Get video and canvas elements
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-
-    // Load the face-api.js models
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights'),
-      faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights'),
-      faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights')
-    ]).then(startVideo);
-
-    // Function to start video stream
-    function startVideo() {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          video.srcObject = stream;
-          detectFaces(); // Start detecting faces
-        })
-        .catch(error => {
-          console.error('Error accessing webcam:', error);
-        });
-    }
-
-    // Function to detect faces in video frames
-    function detectFaces() {
-      // Draw video frame on canvas
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      // Detect faces in the canvas image
-      faceapi.detectAllFaces(canvas)
-        .then(faces => {
-          // Draw face rectangles on canvas
-          faces.forEach(face => {
-            const { x, y, width, height } = face.box;
-            context.lineWidth = 2;
-            context.strokeStyle = 'red';
-            context.beginPath();
-            context.rect(x, y, width, height);
-            context.stroke();
-          });
-
-          // Repeat detection for the next video frame
-          requestAnimationFrame(detectFaces);
-        })
-        .catch(error => {
-          console.error('Error detecting faces:', error);
-        });
-    }
-
-    // Start the video stream
-    startVideo();
-  </script>
+    <h1>Live Video Feed</h1>
+    <video id="camera-feed" autoplay></video>
 </body>
 </html>
