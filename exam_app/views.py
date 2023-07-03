@@ -1113,45 +1113,45 @@ def exam_portal(request):
             return HttpResponseBadRequest("Bad Request")
     return redirect('login')
 
-import cv2
-from django.http import StreamingHttpResponse
-from django.views.decorators import gzip
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
-from django.conf import settings
+# import cv2
+# from django.http import StreamingHttpResponse
+# from django.views.decorators import gzip
+# from django.views.decorators.csrf import csrf_exempt
+# from django.shortcuts import render
+# from django.conf import settings
 
 
 
-def get_frame():
-    # Retrieve the video device index from the application settings
-    video_device_index = int(settings.VIDEO_DEVICE_INDEX)
+# def get_frame():
+#     # Retrieve the video device index from the application settings
+#     video_device_index = int(settings.VIDEO_DEVICE_INDEX)
 
-    video_capture = cv2.VideoCapture(video_device_index)
-    while True:
-        # Capture frame-by-frame
-        ret, frame = video_capture.read()
+#     video_capture = cv2.VideoCapture(video_device_index)
+#     while True:
+#         # Capture frame-by-frame
+#         ret, frame = video_capture.read()
 
-        if not ret:
-            break
+#         if not ret:
+#             break
 
-        # Convert the frame to JPEG format
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
+#         # Convert the frame to JPEG format
+#         ret, buffer = cv2.imencode('.jpg', frame)
+#         frame = buffer.tobytes()
 
-        # Yield the frame in the response
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-@csrf_exempt
-@gzip.gzip_page
-def live_feed(request):
-    try:
-        return StreamingHttpResponse(get_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return None
+#         # Yield the frame in the response
+#         yield (b'--frame\r\n'
+#                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-def camera_part(request):
-    return render(request,"exam_portal/camera_part.html")
+# @csrf_exempt
+# @gzip.gzip_page
+# def live_feed(request):
+#     try:
+#         return StreamingHttpResponse(get_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
+#     except Exception as e:
+#         print(f"An error occurred: {str(e)}")
+#         return None
+
+
+# def camera_part(request):
+#     return render(request,"exam_portal/camera_part.html")
