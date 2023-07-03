@@ -1120,12 +1120,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.conf import settings
 
-# Retrieve the video device index from the application settings
-video_device_index = int(settings.VIDEO_DEVICE_INDEX)
 
-video_capture = cv2.VideoCapture(video_device_index)
 
 def get_frame():
+    # Retrieve the video device index from the application settings
+    video_device_index = int(settings.VIDEO_DEVICE_INDEX)
+
+    video_capture = cv2.VideoCapture(video_device_index)
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
