@@ -976,7 +976,7 @@ import time
 
 def gen():
     # Open the camera
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     # Initialize image counter
     img_counter = 0
