@@ -1153,4 +1153,4 @@ def live_feed(request):
 
 
 def camera_part(request):
-    return render(request, 'exam_portal/camera_part_1.html')
+    return render(request,"exam_portal/camera_part.html")
