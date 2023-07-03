@@ -168,6 +168,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
 # CSRF_COOKIE_DOMAIN = '.azurewebsites.net'
-
-# Define the VIDEO_DEVICE_INDEX setting
-VIDEO_DEVICE_INDEX = os.environ.get('VIDEO_DEVICE_INDEX', '0')
