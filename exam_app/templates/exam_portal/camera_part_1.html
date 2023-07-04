@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webcam Stream</title>
   </head>
   <body>
     <h1>Webcam Stream</h1>
-    <img src="{% url 'live_feed' %}" width="640" height="480">
+    <video id="videoElement" width="640" height="480" autoplay></video>
+
+    <script>
+      var videoElement = document.getElementById('videoElement');
+      var websocket = new WebSocket('ws://' + window.location.host + '/ws/video');
+
+      // Send webcam stream frames to the server
+      function sendFrameToServer() {
+        var canvas = document.createElement('canvas');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        var context = canvas.getContext('2d');
+        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        var frameData = canvas.toDataURL('image/jpeg', 0.8);
+        websocket.send(frameData);
+        setTimeout(sendFrameToServer, 100); // Send frames every 100 milliseconds
+        console.log("sent");
+      }
+
+      // Get access to the webcam stream
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+          videoElement.srcObject = stream;
+          websocket.onopen = function () {
+            sendFrameToServer();
+          };
+        })
+        .catch(function (error) {
+          console.error('Error accessing webcam:', error);
+        });
+    </script>
   </body>
 </html>

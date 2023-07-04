@@ -113,8 +113,9 @@
     </div>
   <div class="col-md-3">
     <div class="row" id="r2">
-      <img src="{% url 'videostream' stream_path='video' %}" class="center" />
+      <video id="video" autoplay></video>
     </div>
+    
     <div class="row" id="r3">
       <h6>Welcome {{ request.session.username }}</h6>
       <h3>Instructions</h3>
@@ -303,7 +304,8 @@ for (var i = 0; i < radios.length; i++) {
     }
   });
 </script>
-<script>
+
+{% comment %} <script>
   // Get the video element
   const video = document.getElementById('video');
 
@@ -338,7 +340,69 @@ for (var i = 0; i < radios.length; i++) {
   } else {
       console.error('getUserMedia is not supported by this browser.');
   }
+</script> {% endcomment %}
+
+<script>
+  // Get the CSRF token from the cookie
+function getCookie(name) {
+var cookieValue = null;
+if (document.cookie && document.cookie !== '') {
+var cookies = document.cookie.split(';');
+for (var i = 0; i < cookies.length; i++) {
+  var cookie = cookies[i].trim();
+  // Does this cookie string begin with the name we want?
+  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    break;
+  }
+}
+}
+return cookieValue;
+}
+
+// Get video and canvas elements
+const video = document.getElementById('video');
+var canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+
+// Get user media stream
+navigator.mediaDevices.getUserMedia({ video: true })
+.then((stream) => {
+video.srcObject = stream;
+})
+.catch((error) => {
+console.error('Error accessing camera:', error);
+});
+
+// Continuously capture frames and send them to the server
+setInterval(() => {
+context.drawImage(video, 0, 0, canvas.width, canvas.height);
+const imageData = canvas.toDataURL('image/png');
+sendData(imageData);
+}, 1000);  // Adjust the interval as per your requirements
+
+// Send image data to the server
+function sendData(imageData) {
+var dataURL = imageData;
+$.ajax({
+url: '{% url "detect_face" %}',
+type: 'POST',
+data: {
+    image: dataURL,
+    csrfmiddlewaretoken: getCookie('csrftoken')
+},
+success: function(response) {
+    console.log('Image sent successfully.');
+    
+},
+error: function(xhr, status, error) {
+    console.error('Error saving image: ' + error);
+}
+});
+}
+
 </script>
+
 
 
 {% endblock scripts %} 

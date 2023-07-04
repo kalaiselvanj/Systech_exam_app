@@ -1115,39 +1115,133 @@ def exam_portal(request):
     return redirect('login')
 
 def camera_part(request):
-    return render(request,"exam_portal/camera_part_1.html")
+    return render(request,"exam_portal/camera_part_2.html")
 
 
 
 
-def get_frame():
-    
-    video_capture = cv2.VideoCapture(0)
+import base64
+import cv2
+import numpy as np
+from django.http import HttpResponse
 
-    while True:
-        # Capture frame-by-frame
-        ret, frame = video_capture.read()
+# @csrf_exempt
+# def detect_face(request):
+#     # Retrieve image data from the request
+#     image_data = request.POST.get('image_data', '')
 
-        if not ret:
-            break
+#     # Convert base64 image data to OpenCV image
+#     image_data = image_data.split(",")[1]
+#     image = base64.b64decode(image_data)
+#     image = np.frombuffer(image, dtype=np.uint8)
+#     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-        # Convert the frame to JPEG format
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
+#     # Perform face detection on the image
+#     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-        # Yield the frame in the response
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+#     # Processed frame with face detection
+#     if len(faces) == 0:
+#         # No face detected
+#         cv2.putText(image, 'No face detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#         print('no face')
+#     elif len(faces) > 1:
+#         # Multiple faces detected
+#         cv2.putText(image, 'Multiple faces detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#         print('multiple face')
+#     else:
+#         # Single face detected
+#         for (x, y, w, h) in faces:
+#             cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+#     # Encode the processed image back to base64 JPEG format
+#     _, buffer = cv2.imencode('.jpg', image)
+#     processed_frame_data = base64.b64encode(buffer).decode('utf-8')
+
+#     # Return the processed frame as a response
+#     return HttpResponse(processed_frame_data)
+
+# def detect_face(request):
+#     if request.method == 'POST':
+#         data_url = request.POST.get('image')
+#         if data_url:
+#             # Decode the data URL and save the image to a file
+#             image_data = base64.b64decode(data_url.split(',')[1])
+#             image = np.frombuffer(image_data, dtype=np.uint8)
+#             image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+#             # Perform face detection on the image
+#             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+#             # Processed frame with face detection
+#             if len(faces) == 0:
+#                 # No face detected
+#                 cv2.putText(image, 'No face detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#                 print('no face')
+#             elif len(faces) > 1:
+#                 # Multiple faces detected
+#                 cv2.putText(image, 'Multiple faces detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#                 print('multiple face')
+#             else:
+#                 # Single face detected
+#                 for (x, y, w, h) in faces:
+#                     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            
+
+#     return JsonResponse({'status': 'error'})
 
 
-@csrf_exempt
-@gzip.gzip_page
-def live_feed(request):
-    try:
-        return StreamingHttpResponse(get_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return None
+import base64
+import cv2
+import numpy as np
+from azure.storage.blob import BlobServiceClient
+import datetime
+
+def detect_face(request):
+    if request.method == 'POST':
+        data_url = request.POST.get('image')
+        if data_url:
+            # Decode the data URL and save the image to a file
+            image_data = base64.b64decode(data_url.split(',')[1])
+            image = np.frombuffer(image_data, dtype=np.uint8)
+            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+            # Perform face detection on the image
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+            blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net')
+            container_name = 'proxy-img'
+            container_client = blob_service_client.get_container_client(container_name)
+
+            if len(faces) == 0:
+                # No face detected, store as "no_face_<timestamp>.jpg"
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                blob_name = f'no_face_{timestamp}.jpg'
+            elif len(faces) > 1:
+                # Multiple faces detected, store as "multiple_face_<timestamp>.jpg"
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                blob_name = f'multiple_face_{timestamp}.jpg'
+            else:
+                # Single face detected, do not store the image
+                return JsonResponse({'status': 'success'})
+
+            # Convert the image to bytes
+            _, img_encoded = cv2.imencode('.jpg', image)
+            img_bytes = img_encoded.tobytes()
+
+            # Upload the image to Azure Blob storage
+            container_client.upload_blob(blob_name, img_bytes)
+
+            return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'})
+
+
 
 
 

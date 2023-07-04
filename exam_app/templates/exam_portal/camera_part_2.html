@@ -1,81 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live Video Streaming</title>
+    <title>Face Detection</title>
 </head>
 <body>
-  <h1>Live Video Streaming</h1>
-  <video id="videoElement" autoplay></video>
-  <canvas id="canvasElement"></canvas>
-  <button onclick="startStreaming()">Start Streaming</button>
-  <button onclick="stopStreaming()">Stop Streaming</button>
+    {% csrf_token %}
+    <h1>Face Detection Web Application</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
 
-  <script>
-    let mediaStream;
-    let videoElement = document.getElementById('videoElement');
-    let canvasElement = document.getElementById('canvasElement');
-    let context = canvasElement.getContext('2d');
 
-    async function startStreaming() {
-      try {
-        // Request access to the user's camera
-        mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        // Display the video stream in the video element
-        videoElement.srcObject = mediaStream;
-
-        console.log('Streaming started.');
-
-        // Start capturing frames and perform face detection
-        const mediaRecorder = new MediaRecorder(mediaStream);
-        mediaRecorder.addEventListener('dataavailable', handleDataAvailable);
-        mediaRecorder.start();
-      } catch (error) {
-        console.error('Error starting the video stream:', error);
+    {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> {% endcomment %}
+    <script>
+      // Get the CSRF token from the cookie
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
     }
+  }
+  return cookieValue;
+}
 
-    function stopStreaming() {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-        console.log('Streaming stopped.');
-      }
+// Get video and canvas elements
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+
+// Get user media stream
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then((stream) => {
+    video.srcObject = stream;
+  })
+  .catch((error) => {
+    console.error('Error accessing camera:', error);
+  });
+
+// Continuously capture frames and send them to the server
+setInterval(() => {
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageData = canvas.toDataURL('image/png');
+  sendData(imageData);
+}, 1000);  // Adjust the interval as per your requirements
+
+// Send image data to the server
+function sendData(imageData) {
+  var dataURL = imageData;
+  $.ajax({
+    url: '{% url "detect_face" %}',
+    type: 'POST',
+    data: {
+        image: dataURL,
+        csrfmiddlewaretoken: getCookie('csrftoken')
+    },
+    success: function(response) {
+        console.log('Image sent successfully.');
+        
+    },
+    error: function(xhr, status, error) {
+        console.error('Error saving image: ' + error);
     }
+});
+}
 
-    function handleDataAvailable(event) {
-      if (event.data && event.data.size > 0) {
-        // Convert the captured frame to an image and perform face detection
-        const blob = new Blob([event.data], { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const frameImage = new Image();
-        frameImage.src = url;
-        frameImage.onload = function() {
-          context.drawImage(frameImage, 0, 0, canvasElement.width, canvasElement.height);
-
-          // Perform face detection on the canvas image
-          const faceRects = faceDetectionOnCanvas();
-
-          // Draw rectangles around the detected faces
-          faceRects.forEach(rect => {
-            context.beginPath();
-            context.lineWidth = '2';
-            context.strokeStyle = 'red';
-            context.rect(rect.x, rect.y, rect.width, rect.height);
-            context.stroke();
-          });
-        };
-      }
-    }
-
-    function faceDetectionOnCanvas() {
-      // Perform face detection on the canvas image
-      // Implement your face detection algorithm here
-      // This is just a placeholder returning dummy face rectangles
-      return [
-        { x: 100, y: 100, width: 200, height: 200 },
-        { x: 300, y: 150, width: 180, height: 180 }
-      ];
-    }
-  </script>
+    </script>
+    
 </body>
 </html>
+
+
