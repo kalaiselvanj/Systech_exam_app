@@ -72,14 +72,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'exam_project.wsgi.application'
 
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}
-
-ASGI_APPLICATION = 'exam_project.routing.application'
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
