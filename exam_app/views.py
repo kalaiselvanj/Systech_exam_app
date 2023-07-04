@@ -1114,8 +1114,8 @@ def exam_portal(request):
             return HttpResponseBadRequest("Bad Request")
     return redirect('login')
 
-def camera_part(request):
-    return render(request,"exam_portal/camera_part_2.html")
+# def camera_part(request):
+#     return render(request,"exam_portal/camera_part_2.html")
 
 
 
