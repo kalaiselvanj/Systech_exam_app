@@ -970,79 +970,79 @@ def submit_answers(request):
     
 
 # Load the Haar Cascade classifier
-# face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# import time
+import time
 
-# def gen():
-#     # Open the camera
-#     cap = cv2.VideoCapture(0)
+def gen():
+    # Open the camera
+    cap = cv2.VideoCapture(0)
 
-#     # Initialize image counter
-#     img_counter = 0
+    # Initialize image counter
+    img_counter = 0
 
-#     # Initialize the flag for capturing an image
-#     capture_flag = False
+    # Initialize the flag for capturing an image
+    capture_flag = False
 
-#     while True:
-#         # Read a frame from the camera
-#         ret, frame = cap.read()
-#         frame = cv2.flip(frame, 1)
+    while True:
+        # Read a frame from the camera
+        ret, frame = cap.read()
+        frame = cv2.flip(frame, 1)
 
-#         # Convert to grayscale
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-#         # Detect faces in the frame
-#         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        # Detect faces in the frame
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-#         # Draw a rectangle around each detected face
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        # Draw a rectangle around each detected face
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-#         # Display the number of faces detected
-#         cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        # Display the number of faces detected
+        cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-#         if len(faces) > 1:
-#             now = datetime.datetime.now()
-#             p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":",''))])
+        if len(faces) > 1:
+            now = datetime.datetime.now()
+            p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":",''))])
 
-#             # Set the capture flag to True and save the image to the disk
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if the capture flag is set to True
-#             if capture_flag:
-#                 time.sleep(2)
-#                 capture_flag = False
+            # Set the capture flag to True and save the image to the disk
+            capture_flag = True
+            cv2.imwrite(p, frame)
+            img_counter += 1
+            # Add a delay of 2 seconds if the capture flag is set to True
+            if capture_flag:
+                time.sleep(2)
+                capture_flag = False
 
-#         if len(faces) == 0:
-#             now = datetime.datetime.now()
-#             p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":",''))])
+        if len(faces) == 0:
+            now = datetime.datetime.now()
+            p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":",''))])
 
-#             # Set the capture flag to True and save the image to the disk
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if the capture flag is set to True
-#             if capture_flag:
-#                 time.sleep(2)
-#                 capture_flag = False
+            # Set the capture flag to True and save the image to the disk
+            capture_flag = True
+            cv2.imwrite(p, frame)
+            img_counter += 1
+            # Add a delay of 2 seconds if the capture flag is set to True
+            if capture_flag:
+                time.sleep(2)
+                capture_flag = False
 
-#         # Resize and encode the frame
-#         frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-#         ret, buffer = cv2.imencode('.jpg', frame)
-#         frame = buffer.tobytes()
+        # Resize and encode the frame
+        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
 
-#         # Yield the frame to the calling function
-#         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        # Yield the frame to the calling function
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-# @gzip.gzip_page
-# def dynamic_stream(request,stream_path="video"):
-#     try :
-#         return StreamingHttpResponse(gen(),content_type="multipart/x-mixed-replace;boundary=frame")
-#     except :
-#         return "error"
+@gzip.gzip_page
+def dynamic_stream(request,stream_path="video"):
+    try :
+        return StreamingHttpResponse(gen(),content_type="multipart/x-mixed-replace;boundary=frame")
+    except :
+        return "error"
 
     
 # define function to generate video frames
@@ -1064,91 +1064,7 @@ def video_feed():
 def video(request):
     return StreamingHttpResponse(video_feed(), content_type='multipart/x-mixed-replace; boundary=frame')
 
-# import cv2
-# import datetime
-# import os
-# import time
-# from django.http import HttpResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from channels.layers import get_channel_layer
-# from asgiref.sync import async_to_sync
 
-# def gen():
-#     face_cascade = cv2.CascadeClassifier('path/to/your/haarcascade_frontalface_default.xml')
-
-#     # Open the camera
-#     cap = cv2.VideoCapture(0)
-
-#     # Initialize image counter
-#     img_counter = 0
-
-#     # Initialize the flag for capturing an image
-#     capture_flag = False
-
-#     while True:
-#         # Read a frame from the camera
-#         ret, frame = cap.read()
-#         frame = cv2.flip(frame, 1)
-
-#         # Convert to grayscale
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-#         # Detect faces in the frame
-#         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-
-#         # Draw a rectangle around each detected face
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-#         # Display the number of faces detected
-#         cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-#         if len(faces) > 1:
-#             now = datetime.datetime.now()
-#             p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":", ''))])
-
-#             # Set the capture flag to True and save the image to the disk
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if the capture flag is set to True
-#             if capture_flag:
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         if len(faces) == 0:
-#             now = datetime.datetime.now()
-#             p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":", ''))])
-
-#             # Set the capture flag to True and save the image to the disk
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if the capture flag is set to True
-#             if capture_flag:
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         # Resize and encode the frame
-#         frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-#         ret, buffer = cv2.imencode('.jpg', frame)
-#         frame = buffer.tobytes()
-
-#         # Yield the frame to the calling function
-#         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-# @csrf_exempt
-# def video_stream(request):
-#     if request.is_websocket():
-#         channel_layer = get_channel_layer()
-#         async_to_sync(channel_layer.group_add)('video_stream', request.websocket)
-
-#         for frame in gen():
-#             async_to_sync(request.websocket.send)(frame)
-
-#     return HttpResponse()
-
-    
 
 def exam_portal(request):
     global is_recording
@@ -1198,248 +1114,134 @@ def exam_portal(request):
             return HttpResponseBadRequest("Bad Request")
     return redirect('login')
 
-def camera_part(request):
-    return render(request,"exam_portal/camera_part.html")
-
-    
-import time
-import datetime
-import os
-import cv2
-from azure.storage.blob import BlobServiceClient
-from azure.identity import DefaultAzureCredential
-from django.http import StreamingHttpResponse
-
-# # Azure Blob Storage configuration
-# blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=csg100320020d4ba462;AccountKey=Lli0/Zbb+VglTkdJLC1OFOHwPsOwSDTYpeFj8JbgbNmd10v/34Yq9v5auPZSr6zw1H9JOaY+yxK3+AStof6QEA==;EndpointSuffix=core.windows.net")
-# container_name = "systech-exam-app"
-
-# # Load the Haar Cascade classifier
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# def camera_part(request):
+#     return render(request,"exam_portal/camera_part_2.html")
 
 
-# def gen():
-#     # Open the camera
-#     cap = cv2.VideoCapture(0)
-
-#     # Initialize image counter
-#     img_counter = 0
-
-#     # Initialize the flag for capturing an image
-#     capture_flag = False
-
-#     while True:
-#         # Read a frame from the camera
-#         ret, frame = cap.read()
-#         frame = cv2.flip(frame, 1)
-
-#         # Convert to grayscale
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-#         # Detect faces in the frame
-#         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-
-#         # Draw a rectangle around each detected face
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-#         # Display the number of faces detected
-#         cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-#         if len(faces) > 1:
-#             now = datetime.datetime.now()
-#             filename = "More_than_one_face_detected{}.png".format(str(now).replace(":", ''))
-#             save_image(frame, filename)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if any face is detected
-#             if any(capture_flag):
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         if len(faces) == 0:
-#             now = datetime.datetime.now()
-#             filename = "No_face_detected{}.png".format(str(now).replace(":", ''))
-#             save_image(frame, filename)
-#             img_counter += 1
-#             # Add a delay of 2 seconds if no face is detected
-#             if any(capture_flag):
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         # Resize and encode the frame
-#         frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-#         ret, buffer = cv2.imencode('.jpg', frame)
-#         frame = buffer.tobytes()
-
-#         # Yield the frame to the calling function
-#         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-# def save_image(frame, filename):
-#     # Save the image to Azure Blob Storage
-#     blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-#     blob_client.upload_blob(frame, overwrite=True)
-
-
-# def dynamic_stream(request, stream_path="video"):
-#     try:
-#         return StreamingHttpResponse(gen(), content_type="multipart/x-mixed-replace;boundary=frame")
-#     except:
-#         return "error"
-    
-
-
-# Replace <your-connection-string> with your actual Azure Blob Storage connection string
-blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=csg100320020d4ba462;AccountKey=Lli0/Zbb+VglTkdJLC1OFOHwPsOwSDTYpeFj8JbgbNmd10v/34Yq9v5auPZSr6zw1H9JOaY+yxK3+AStof6QEA==;EndpointSuffix=core.windows.net")
-
-# Replace <your-container-name> with the name of your Azure Blob storage container
-container_name = "systech-exam-app"
-
-# def gen():
-#     cap = cv2.VideoCapture(0)
-#     img_counter = 0
-#     capture_flag = False
-
-#     while True:
-#         ret, frame = cap.read()
-#         frame = cv2.flip(frame, 1)
-
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-#         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-#         cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-#         if len(faces) > 1:
-#             now = datetime.datetime.now()
-#             filename = "More than one face detected{}.png".format(str(now).replace(":", ''))
-#             p = os.path.sep.join(['img', filename])
-
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-
-#             if capture_flag:
-#                 # Save the image to Azure Blob storage
-#                 blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-#                 with open(p, "rb") as image_file:
-#                     blob_client.upload_blob(image_file)
-
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         if len(faces) == 0:
-#             now = datetime.datetime.now()
-#             filename = "No face detected{}.png".format(str(now).replace(":", ''))
-#             p = os.path.sep.join(['img', filename])
-
-#             capture_flag = True
-#             cv2.imwrite(p, frame)
-#             img_counter += 1
-
-#             if capture_flag:
-#                 # Save the image to Azure Blob storage
-#                 blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-#                 with open(p, "rb") as image_file:
-#                     blob_client.upload_blob(image_file)
-
-#                 time.sleep(2)
-#                 capture_flag = False
-
-#         frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-#         ret, buffer = cv2.imencode('.jpg', frame)
-#         frame = buffer.tobytes()
-
-#         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        
-
-# def dynamic_stream(request, stream_path="video"):
-#     try:
-#         return StreamingHttpResponse(gen(), content_type="multipart/x-mixed-replace;boundary=frame")
-#     except:
-#         return "error"
-
-
+import base64
 import cv2
 import numpy as np
+from django.http import HttpResponse
+
+# @csrf_exempt
+# def detect_face(request):
+#     # Retrieve image data from the request
+#     image_data = request.POST.get('image_data', '')
+
+#     # Convert base64 image data to OpenCV image
+#     image_data = image_data.split(",")[1]
+#     image = base64.b64decode(image_data)
+#     image = np.frombuffer(image, dtype=np.uint8)
+#     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+#     # Perform face detection on the image
+#     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+#     # Processed frame with face detection
+#     if len(faces) == 0:
+#         # No face detected
+#         cv2.putText(image, 'No face detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#         print('no face')
+#     elif len(faces) > 1:
+#         # Multiple faces detected
+#         cv2.putText(image, 'Multiple faces detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#         print('multiple face')
+#     else:
+#         # Single face detected
+#         for (x, y, w, h) in faces:
+#             cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+#     # Encode the processed image back to base64 JPEG format
+#     _, buffer = cv2.imencode('.jpg', image)
+#     processed_frame_data = base64.b64encode(buffer).decode('utf-8')
+
+#     # Return the processed frame as a response
+#     return HttpResponse(processed_frame_data)
+
+# def detect_face(request):
+#     if request.method == 'POST':
+#         data_url = request.POST.get('image')
+#         if data_url:
+#             # Decode the data URL and save the image to a file
+#             image_data = base64.b64decode(data_url.split(',')[1])
+#             image = np.frombuffer(image_data, dtype=np.uint8)
+#             image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+#             # Perform face detection on the image
+#             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+#             # Processed frame with face detection
+#             if len(faces) == 0:
+#                 # No face detected
+#                 cv2.putText(image, 'No face detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#                 print('no face')
+#             elif len(faces) > 1:
+#                 # Multiple faces detected
+#                 cv2.putText(image, 'Multiple faces detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+#                 print('multiple face')
+#             else:
+#                 # Single face detected
+#                 for (x, y, w, h) in faces:
+#                     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            
+
+#     return JsonResponse({'status': 'error'})
+
+
+import base64
+import cv2
+import numpy as np
+from azure.storage.blob import BlobServiceClient
 import datetime
-import os
-import time
 
-def gen(video_stream):
-    capture_flag = False
-    img_counter = 0
-    face_cascade = cv2.CascadeClassifier('path_to_face_cascade.xml')
+def detect_face(request):
+    if request.method == 'POST':
+        data_url = request.POST.get('image')
+        if data_url:
+            # Decode the data URL and save the image to a file
+            image_data = base64.b64decode(data_url.split(',')[1])
+            image = np.frombuffer(image_data, dtype=np.uint8)
+            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    while True:
-        # Convert the base64-encoded video stream from JavaScript to a numpy array
-        frame_data = np.frombuffer(video_stream, dtype=np.uint8)
-        frame = cv2.imdecode(frame_data, cv2.IMREAD_COLOR)
+            # Perform face detection on the image
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-        # Flip the frame horizontally
-        frame = cv2.flip(frame, 1)
+            blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net')
+            container_name = 'proxy-img'
+            container_client = blob_service_client.get_container_client(container_name)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            if len(faces) == 0:
+                # No face detected, store as "no_face_<timestamp>.jpg"
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                blob_name = f'no_face_{timestamp}.jpg'
+            elif len(faces) > 1:
+                # Multiple faces detected, store as "multiple_face_<timestamp>.jpg"
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                blob_name = f'multiple_face_{timestamp}.jpg'
+            else:
+                # Single face detected, do not store the image
+                return JsonResponse({'status': 'success'})
 
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+            # Convert the image to bytes
+            _, img_encoded = cv2.imencode('.jpg', image)
+            img_bytes = img_encoded.tobytes()
 
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            # Upload the image to Azure Blob storage
+            container_client.upload_blob(blob_name, img_bytes)
 
-        cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            return JsonResponse({'status': 'success'})
 
-        if len(faces) > 1:
-            now = datetime.datetime.now()
-            filename = "More_than_one_face_detected{}.png".format(str(now).replace(":", ''))
-            p = os.path.sep.join(['img', filename])
-
-            capture_flag = True
-            cv2.imwrite(p, frame)
-            img_counter += 1
-
-            if capture_flag:
-                # Save the image to Azure Blob storage
-                blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-                with open(p, "rb") as image_file:
-                    blob_client.upload_blob(image_file)
-
-                time.sleep(2)
-                capture_flag = False
-
-        if len(faces) == 0:
-            now = datetime.datetime.now()
-            filename = "No_face_detected{}.png".format(str(now).replace(":", ''))
-            p = os.path.sep.join(['img', filename])
-
-            capture_flag = True
-            cv2.imwrite(p, frame)
-            img_counter += 1
-
-            if capture_flag:
-                # Save the image to Azure Blob storage
-                blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-                with open(p, "rb") as image_file:
-                    blob_client.upload_blob(image_file)
-
-                time.sleep(2)
-                capture_flag = False
-
-        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-
-        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    return JsonResponse({'status': 'error'})
 
 
-def dynamic_stream(request):
-    try:
-        video_stream = request.POST.get('video_stream')  # Get the video stream data from the request
-        return StreamingHttpResponse(gen(video_stream), content_type="multipart/x-mixed-replace;boundary=frame")
-    except:
-        return "error"
 
 
 

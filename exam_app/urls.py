@@ -1,6 +1,7 @@
 from django.urls import path,re_path
 from . import views
 
+
 urlpatterns = [
     # path('',views.sidebar,name='base'),
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -43,4 +44,8 @@ urlpatterns = [
     path('generate-excel/', views.generate_excel, name='generate_excel'),
     path('show_candidate_data/<int:id>', views.show_candidate_data, name='show_candidate_data'),
     path('registercandidate/',views.registercandidate,name='registercandidate'),
+    # path('video/',views.camera_part,name='video'),
+    path('detect_face/', views.detect_face, name='detect_face'),
+    
 ]
+
