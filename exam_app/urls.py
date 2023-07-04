@@ -1,6 +1,6 @@
 from django.urls import path,re_path
 from . import views
-from . import webcam_socket
+
 
 urlpatterns = [
     # path('',views.sidebar,name='base'),
@@ -44,12 +44,7 @@ urlpatterns = [
     path('show_candidate_data/<int:id>', views.show_candidate_data, name='show_candidate_data'),
     path('registercandidate/',views.registercandidate,name='registercandidate'),
     path('video/',views.camera_part,name='video'),
-    # path('live_feed/', views.live_feed, name='live_feed'),
     path('detect_face/', views.detect_face, name='detect_face'),
     
 ]
 
-
-websocket_urlpatterns = [
-    re_path(r'ws/$', webcam_socket.WebcamConsumer.as_asgi()),
-]
