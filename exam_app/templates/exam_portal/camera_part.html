@@ -1,53 +1,57 @@
+<!-- exam.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Video Stream Capture</title>
+    <title>Online Exam</title>
 </head>
 <body>
-  <video id="video" autoplay></video>
+    <h1>{{ exam.title }}</h1>
+    <!-- Display exam questions and answers here... -->
 
-  <script>
-    // Get access to the user's webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-        // Create a video element to display the video stream
-        var video = document.getElementById('video');
-        video.srcObject = stream;
+    <div id="timer">Time remaining: <span id="countdown"></span></div>
 
-        // Create a canvas element to capture video frames
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+    <script>
+        // JavaScript code for the countdown timer
+        var countdownEl = document.getElementById('countdown');
+        var totalDuration = countdownEl.dataset.totalDuration;
+        var countDownDate = new Date().getTime() + (totalDuration * 60 * 1000);
 
-        // Start capturing frames from the video stream
-        function captureFrame() {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          var imageData = canvas.toDataURL('image/jpeg');
-
-          // Send the video frame to the server via an HTTP POST request
-          fetch('/your-server-endpoint', {
-            method: 'POST',
-            body: JSON.stringify({ video_stream: imageData }),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }).then(function(response) {
-            // Handle the response from the server
-          }).catch(function(error) {
-            console.error('Error:', error);
-          });
-
-          // Capture the next frame after a delay (e.g., 100 milliseconds)
-          setTimeout(captureFrame, 100);
+        // Check if the timestamp exists in the local storage
+        var storedTimestamp = localStorage.getItem('countDownDate');
+        if (storedTimestamp) {
+            countDownDate = parseInt(storedTimestamp, 10);
+        } else {
+            // Save the initial timestamp in the local storage
+            localStorage.setItem('countDownDate', countDownDate);
         }
 
-        // Start capturing frames
-        captureFrame();
-      })
-      .catch(function(error) {
-        console.error('Error accessing webcam:', error);
-      });
-  </script>
+        // Function to update the timer
+        function updateTimer() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = hours + ":"
+            + minutes + ":" + seconds + "";
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+                alert("Your time is up. Please submit your answers.");
+                window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
+            }
+        }
+
+        // Update the count down every 1 second
+        var x = setInterval(updateTimer, 1000);
+
+        // When the page is reloaded, remove the timestamp from local storage to reset the timer
+        window.addEventListener('beforeunload', function() {
+            localStorage.removeItem('countDownDate');
+        });
+    </script>
 </body>
 </html>

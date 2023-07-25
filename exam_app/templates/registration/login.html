@@ -8,26 +8,58 @@
   <style>
     body {
       background-color: #ffff;
+      margin: 0; /* Remove default margin to ensure full width */
+      min-height: 100vh; /* Ensure the container fills the whole viewport */
     }
+
     .container-login {
       background-image: url('/static/images/emp_pic.jpg');
       background-size: cover;
       background-position: center center;
-      height: 100vh;
+      min-height: 100vh; /* Ensure the container fills the whole viewport */
       display: flex;
       justify-content: left;
     }
-  
-  .text-black {
-    color: #000;
-    margin-left: 20px;
-  }
-  
-.card {
-    border-radius: 0;
-    border: none;
+
     
-  }
+    /* Add a media query for small devices to make the image container full-width */
+    @media (max-width: 767px) {
+      .container-login {
+        justify-content: center;
+      }
+    }
+
+    /* Footer styles */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #4aa6f7;
+      padding: 10px 0;
+      text-align: center;
+      color: #fff;
+      font-size: 0.875rem;
+    }
+
+    .footer a {
+      color: #fff;
+    }
+
+    .logo {
+      width: 120px;
+      height: 100px;
+      border-radius: 35%;
+      margin-top: 20px;
+      mix-blend-mode: multiply;
+    }
+    .text-black {
+      color: #000;
+      margin-left: 20px;
+    }
+    .card {
+      border-radius: 0;
+      border: none;
+    }
   
   .card-title {
     font-size: 2rem;
@@ -72,11 +104,11 @@
     background-color: #4aa6f7!important;
   }
   
-  .py-3 {
+  <!-- .py-3 {
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
-  
+   -->
   .text-center {
     text-align: center!important;
   }
@@ -90,23 +122,7 @@
     margin-left: 0;
   }
   
-  .col-md-4 {
-    flex-basis: 33.333333%;
-    max-width: 33.333333%;
-  }
-  
-  .col-md-8 {
-    flex-basis: 66.666667%;
-    max-width: 66.666667%;
-  }
-  
-  @media (max-width: 767.98px) {
-    .col-md-4,
-    .col-md-8 {
-      flex-basis: 100%;
-      max-width: 100%;
-    }
-  }  .logo {
+ .logo {
         width: 120px;
         height: 100px;
         border-radius: 35%;
@@ -122,12 +138,9 @@
         <div class="container-login">
           <div class="text-black">
             <div>
-                <img src="{% static '/images/systech-logo.png' %}" class="logo" />
+              <img src="{% static 'images/systech-logo.png' %}" class="logo" />
             </div>
-            <div class=" mt-5">
-                <!-- <h1>Welcome</h1> -->
-                <!-- <p>xvsahv,cvhdasvc ckwhfwejhfcjkwencka.sd acsdgsjk ,.</p> -->
-            </div>
+            <!-- ... -->
           </div>
         </div>
       </div>
@@ -144,7 +157,6 @@
                     <div class="form-group">
                       <label for="username">Username:</label>
                       <input type="text" class="form-control" name="username" id="username" placeholder="Enter username" required>
-                      
                     </div>
                     
                     <div class="form-group">
@@ -152,8 +164,9 @@
                       <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
                       <span style="color: red">{{perror}}</span>
                     </div>
+                    <br>
                     
-                    <div class="form-group form-check d-flex flex-row justify-content-between">
+                    <!-- <div class="form-group form-check d-flex flex-row justify-content-between">
                         <div class="">
                             <input type="checkbox" class="form-check-input" id="remember-me">
                             <label class="form-check-label" for="remember-me">Remember me</label>
@@ -161,26 +174,28 @@
                         <div>
                             <a href="#" class="ml-auto mt-3 text-sm">Forgot Password?</a>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row justify-content-center">
                         <button type="submit" class="btn btn-primary">Submit</button>
-                      </div>                      
+                    </div>                      
                   </form>
                 </div>
               </div>
             </div>
           </div>
+          <br>
           <div class="row justify-content-center">
             <div class="col-md-8 text-center">
               <small>Don't have an account? <a href="{% url 'registration' %}">Register here</a></small>
             </div>
           </div>
         </div>
-        <div class="bg-light py-3" style="margin-top:79px">
-          <div class="container" >
-            <div class="row ">
+        <!-- Footer -->
+        <div class="footer bg-light py-3">
+          <div class="container">
+            <div class="row">
               <div class="col-md-12 text-center">
-                <small>&copy; 2023 Example Company. All Rights Reserved.</small>
+                <small>&copy; 2023 Systech Company. All Rights Reserved.</small>
               </div>
             </div>
           </div>

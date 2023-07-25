@@ -1,13 +1,6 @@
 {% extends 'base.html' %} {% load static%} {% block content %}
-<head>  <style>   body
-  {
-      counter-reset: Serial;           /* Set the Serial counter to 0 */
-  }
-  tr td:first-child:before
-  {
-    counter-increment: Serial;      /* Increment the Serial counter */
-    content: counter(Serial); /* Display the counter */
-  }
+<head>  <style> 
+  
   .sticky-thead {
     position: sticky;
     top:-1px;
@@ -220,6 +213,41 @@ input[type="date"]:focus {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#prevBtn,
+#nextBtn {
+  background: #1abc9c;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#prevBtn:hover,
+#nextBtn:hover {
+  background: #1abc9c;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+#pageNumbers {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+
+
 
 
 </style>
@@ -280,7 +308,7 @@ input[type="date"]:focus {
       </form>
   </div>
 
-  <div style="height: 70vh; overflow-y: auto; margin:20px;" >
+  <div style="height: 60vh; overflow-y: auto; overflow-x: auto; margin-top:20px" >
     <table class="table table-bordered text-center">
       <thead class="sticky-thead">
         <tr>
@@ -299,17 +327,103 @@ input[type="date"]:focus {
         <tr>
           {% for res in user %}
             <td></td>
-            <td>{{res.0}}</td>
+            <td><a href="{% url 'resultsdetail' id=res.2 level=res.3 %}">{{res.0}}</a></td>
             <td>{{res.2}}</td>
             <td>{{res.1}}</td>
             <td>{{res.3}}</td>
             <td>{{res.4}}</td>
             <td>{{res.5}}</td>
-            
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    <div id="pagination">
+      <button id="prevBtn">&lt; Prev</button>
+      <span id="pageNumbers"></span>
+      <button id="nextBtn">Next &gt;</button>
+    </div>
   </div>
+    
 </div>
+<script>
+   // Get the current date
+   var currentDate = new Date();
+
+   // Check if the start_date is empty
+   if (!document.getElementById("StartDate").value) {
+     // Set the value of start_date to the current month's starting date
+     var currentMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+     var year = currentMonthStartDate.getFullYear();
+     var month = (currentMonthStartDate.getMonth() + 1).toString().padStart(2, '0');
+     var day = "01";
+     var formattedStartDate = `${year}-${month}-${day}`;
+     document.getElementById("StartDate").value = formattedStartDate;
+   }
+ 
+   // Check if the end_date is empty
+   if (!document.getElementById("EndDate").value) {
+     // Set the value of end_date to the current date
+     var year = currentDate.getFullYear();
+     var month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+     var day = currentDate.getDate().toString().padStart(2, '0');
+     var formattedEndDate = `${year}-${month}-${day}`;
+     document.getElementById("EndDate").value = formattedEndDate;
+   }
+
+   function paginateTable(pageSize) {
+    var table = document.querySelector('.table');
+    var tbody = table.querySelector('tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+  
+    var currentPage = 1;
+    var totalPages = Math.ceil(rows.length / pageSize);
+  
+    function showPage(page) {
+      currentPage = page;
+    
+      var start = (currentPage - 1) * pageSize;
+      var end = start + pageSize;
+    
+      rows.forEach(function (row, index) {
+        if (index >= start && index < end) {
+          // Calculate the continuous serial number for each row
+          var serialNumber = index + 1;
+          row.querySelector('td:first-child').textContent = serialNumber;
+    
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    
+      updatePageNumbers();
+    }
+    
+    function updatePageNumbers() {
+      var pageNumbers = document.getElementById('pageNumbers');
+      pageNumbers.textContent = currentPage + ' / ' + totalPages;
+    }
+  
+    function goToPrevPage() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    }
+  
+    function goToNextPage() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      }
+    }
+  
+    document.getElementById('prevBtn').addEventListener('click', goToPrevPage);
+    document.getElementById('nextBtn').addEventListener('click', goToNextPage);
+  
+    showPage(1);
+  }
+
+  paginateTable(5); // Change the page size as needed
+// Change the page size as needed
+
+</script>
 {% endblock %}

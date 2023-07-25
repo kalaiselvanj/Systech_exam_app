@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Camera and Microphone Check</title>
+  <style>
+    /* The CSS styles for the page layout */
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #instructions {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    #checks {
+      flex: 1;
+      border-left: 1px solid #ccc;
+      padding-left: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #camera-preview,
+    #microphone-preview {
+      width: 100%;
+      max-width: 400px;
+      height: 300px; /* Updated height for better UI */
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      object-fit: cover; /* To maintain aspect ratio */
+    }
+
+    #microphone-controls {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      transition-duration: 0.4s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Add the disabled style for the Next button */
+    #next-button[disabled] {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      background-color: #f5f5f5;
+      max-height: 60px;
+      overflow-y: auto;
+      opacity: 0; /* Initially hidden */
+      transform: translateY(20px); /* Slide down animation */
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    .status-container.show {
+      opacity: 1; /* Visible */
+      transform: translateY(0); /* Slide up animation */
+    }
+
+    .status-container.pass {
+      color: green;
+    }
+
+    .status-container.fail {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">
+    <h1>Instructions:</h1>
+    <p>
+      1. Ensure your device has a working camera and microphone.<br>
+      2. Grant the necessary permissions when prompted to access the camera and microphone.<br>
+      3. On the left side of the page, you will see the camera preview, and on the right side, you will see the microphone preview along with start and stop buttons for the microphone check.
+    </p>
+    <!-- Add the Next button with the ID 'next-button' -->
+    <button  id="next-button" disabled>Next</button>
+  </div>
+  <div id="checks">
+    <h1>Camera Check:</h1>
+    <video id="camera-preview" autoplay></video>
+
+    <h1>Microphone Check:</h1>
+    <audio id="microphone-preview" autoplay></audio>
+    <div id="microphone-controls">
+      <button id="start-microphone-check">Start Microphone Check</button>
+      <button id="stop-microphone-check">Stop Microphone Check</button>
+    </div>
+
+    <div class="status-container" id="camera-status"></div>
+    <div class="status-container" id="microphone-status"></div>
+  </div>
+
+  <script>
+    // The JavaScript code remains the same
+    const cameraStatusContainer = document.getElementById('camera-status');
+    const microphoneStatusContainer = document.getElementById('microphone-status');
+    const nextButton = document.getElementById('next-button'); // Get the Next button
+
+    function setCameraStatus(statusMessage, isSuccess) {
+      cameraStatusContainer.textContent = statusMessage;
+      cameraStatusContainer.className = `status-container ${isSuccess ? 'pass' : 'fail'}`;
+      cameraStatusContainer.classList.add('show'); // Show the status container
+      checkNextButtonStatus(); // Check if Next button should be enabled
+    }
+
+    function setMicrophoneStatus(statusMessage, isSuccess) {
+      microphoneStatusContainer.textContent = statusMessage;
+      microphoneStatusContainer.className = `status-container ${isSuccess ? 'pass' : 'fail'}`;
+      microphoneStatusContainer.classList.add('show'); // Show the status container
+      checkNextButtonStatus(); // Check if Next button should be enabled
+    }
+
+    function checkNextButtonStatus() {
+      // Enable the Next button only if both checks pass
+      if (
+        cameraStatusContainer.classList.contains('pass') &&
+        microphoneStatusContainer.classList.contains('pass')
+      ) {
+        nextButton.removeAttribute('disabled');
+      } else {
+        nextButton.setAttribute('disabled', 'disabled');
+      }
+    }
+
+    // Rest of the code remains unchanged
+    const logContainer = document.createElement('div');
+
+    function logMessage(message) {
+      logContainer.textContent = message;
+    }
+
+    let cameraStream;
+    let microphoneStream;
+    let microphoneRecorder;
+
+    // Camera check
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        const videoElement = document.getElementById('camera-preview');
+        videoElement.srcObject = stream;
+        cameraStream = stream;
+        setCameraStatus('Camera check successful', true);
+      })
+      .catch((error) => {
+        console.error('Error accessing camera:', error);
+        setCameraStatus(`Error accessing camera: ${error.message}`, false);
+      });
+
+    // Microphone check
+    const startMicrophoneCheckButton = document.getElementById('start-microphone-check');
+    const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check');
+
+    startMicrophoneCheckButton.addEventListener('click', startMicrophoneCheck);
+    stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck);
+
+    function startMicrophoneCheck() {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          const audioContext = new AudioContext();
+          const source = audioContext.createMediaStreamSource(stream);
+          const analyser = audioContext.createAnalyser();
+          source.connect(analyser);
+          microphoneStream = stream;
+          microphoneRecorder = analyser;
+
+          setMicrophoneStatus('Microphone checked successfully', true);
+        })
+        .catch((error) => {
+          console.error('Error accessing microphone:', error);
+          setMicrophoneStatus(`Error accessing microphone: ${error.message}`, false);
+        });
+    }
+
+    function stopMicrophoneCheck() {
+      if (microphoneStream) {
+        microphoneStream.getTracks().forEach((track) => track.stop());
+        microphoneStream = null;
+        microphoneRecorder = null;
+
+        setMicrophoneStatus('Microphone check stopped', true);
+      }
+    }
+
+    document.getElementById("next-button").addEventListener("click", function() {
+        redirectToURL();
+    });
+    function redirectToURL() {
+        // Replace 'your_target_url' with the URL you want to redirect to
+        window.location.href = '/exam_main_dashboard';
+      }
+    
+  </script>
+</body>
+</html>

@@ -214,7 +214,7 @@
                             <select id="Applyingfor" name="Applyingfor" required >
                                 <option value="" disabled selected hidden>Select option</option>
                                 {% for job in jobs %}             
-                                <option value="{{job.0}}">{{ job.1 }}</option>
+                                <option value="{{job.1}}">{{ job.0 }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -502,7 +502,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3" id="date-container" style="display:none";>
+                            <div class="col-md-3" id="date-container" style="display:none;">
                                 <label class="input-label mt-0" for="Adate">Date:</label>
                                 <input type="date" id="Adate" name="Adate">
                                 <span id="date-validation-message" style="color:red;"></span>
@@ -683,6 +683,21 @@
 
 
 
+    // Function to reset the fields
+  function resetFields() {
+    var idProofSelect = document.getElementById("Id_proof");
+    var idNoInput = document.getElementById("ID_NO");
+
+    // Reset the dropdown to the default value
+    idProofSelect.selectedIndex = 0;
+    // Clear the text input field
+    idNoInput.value = "";
+  }
+
+  // Attach the reset function to the window.onbeforeunload event
+  window.onbeforeunload = function () {
+    resetFields();
+  };
 
     
     
@@ -819,6 +834,29 @@ submitButton.addEventListener('click', function(event) {
         }
 
     }
+
+    // Function to validate the date input
+    function validateDate() {
+        var dateInput = document.getElementById("Adate");
+        var validationMessage = document.getElementById("date-validation-message");
+        var selectedDate = new Date(dateInput.value);
+        var currentDate = new Date();
+
+        if (!dateInput.value) {
+        validationMessage.textContent = "Please select a date.";
+        return false;
+        } else if (selectedDate > currentDate) {
+        validationMessage.textContent = "Future dates are not allowed.";
+        return false;
+        } else {
+        validationMessage.textContent = ""; // Clear the error message
+        return true;
+        }
+    }
+
+  // Attach the validation function to the date input's change event
+  var dateInput = document.getElementById("Adate");
+  dateInput.addEventListener("change", validateDate);
    
 
 

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-eu(31c*wgl!q-jy%-(4!6phy20pt9-w2wx=z#h^5jz9figz-xg'
+SECRET_KEY = 'django-insecure-fqhr3^=&1=idmnb7o0_*p$#*=h$-#r=+$mmrigp8-c@q%hck^9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'exam_app',
-    # 'channels',
 ]
 
 MIDDLEWARE = [
@@ -91,14 +90,14 @@ DATABASES = {
         'NAME': 'OLT_DEV',
 
         # String. Database user name in "user" format. If not given then MS Integrated Security will be used.
-        'USER': 'Santosh',
+        'USER': 'Shrija',
 
         # String. Database user password.
-        'PASSWORD': 'Pr@k@sh123',
+        'PASSWORD': 'systech@123',
         
 
          # String. SQL Server instance in "server\instance" format.
-        'HOST': 'systech-exam-app-prod.database.windows.net',
+        'HOST': 'systech-exam-app.database.windows.net',
 
         # String. Server instance port. An empty string means the default port.
         'PORT': '1433',
@@ -148,7 +147,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
@@ -158,14 +157,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
-
-# CSRF_COOKIE_DOMAIN = '.azurewebsites.net'

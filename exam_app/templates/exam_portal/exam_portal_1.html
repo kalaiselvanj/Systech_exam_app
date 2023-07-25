@@ -388,6 +388,7 @@ $.ajax({
 url: '{% url "detect_face" %}',
 type: 'POST',
 data: {
+    user:"{{user_id}}",
     image: dataURL,
     csrfmiddlewaretoken: getCookie('csrftoken')
 },

@@ -27,9 +27,10 @@ urlpatterns = [
     path('delete_ques/<int:id>', views.delete_ques, name='delete_ques'),
     path('activate_quest/<int:id>', views.activate_quest, name='activate_quest'),
     path('result/', views.result, name='result'),
+    path('resultsdetail/<int:id>/<str:level>/',views.resultsdetail,name='resultsdetail'),
     path('registration/', views.registration, name='registration'),
-    re_path(r'^/(?P<stream_path>(.*?))/$',views.dynamic_stream,name="videostream"),
-    path('video/',views.camera_part,name='video'),
+    path('alert_page_exam/',views.alert_page_exam,name="alert_page_exam"), 
+    path('introcheckpage/',views.introcheckpage,name="introcheckpage"),
     path('exam_portal',views.exam_portal,name="index"),
     path('exam_main_dashboard',views.exam_main_dashboard,name="exam_main_dashboard"),
     path('alertpage',views.alertpage,name="alertpage"),
@@ -44,8 +45,8 @@ urlpatterns = [
     path('generate-excel/', views.generate_excel, name='generate_excel'),
     path('show_candidate_data/<int:id>', views.show_candidate_data, name='show_candidate_data'),
     path('registercandidate/',views.registercandidate,name='registercandidate'),
-    # path('video/',views.camera_part,name='video'),
     path('detect_face/', views.detect_face, name='detect_face'),
+    path('video/', views.camera_part, name='video'),
     
 ]
 

@@ -14,15 +14,25 @@
 
   <style type="text/css">
 
-    body
-    {
-        counter-reset: Serial;           /* Set the Serial counter to 0 */
+    /* Adjust the size of the icon */
+    .fa-lg {
+      font-size: 34px; /* You can change this value to increase or decrease the size */
     }
-    tr td:first-child:before
-    {
-      counter-increment: Serial;      /* Increment the Serial counter */
-      content: counter(Serial); /* Display the counter */
+
+    /* Add space before the icon */
+    .excel-link {
+      margin-left: 50px; /* You can change this value to adjust the spacing */
+      margin-top: 7px;
+      color: #1abc9c;
+      {% comment %} box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); {% endcomment %}
+      
     }
+    
+    .excel-link:hover {
+      color: #1abc9c;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
     a:link {
       text-decoration: none;
     }
@@ -278,6 +288,7 @@
       border: none;
       background-color: #f5f5f5;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
       padding: 10px;
       color: #444;
       font-size: 14px;
@@ -399,20 +410,20 @@ input[type="date"]:focus {
 }
 
 
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
-  }
-  
-  .dashboard-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #000000;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    margin-bottom: 30px;
-  }
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 500
+  color: #000000;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  margin-bottom: 30px;
+}
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -426,6 +437,41 @@ input[type="date"]:focus {
     background: #f0f0f0;
     border-radius: 3px;
   }
+
+  #pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #prevBtn,
+  #nextBtn {
+    background: #1abc9c;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  #prevBtn:hover,
+  #nextBtn:hover {
+    background: #1abc9c;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  #pageNumbers {
+    margin: 0 10px;
+    font-size: 16px;
+  }
+  
+  
    
   
         </style>
@@ -437,8 +483,8 @@ input[type="date"]:focus {
 <div class="container">
     <div class="row">
 
-      <div class="col-12 today-attendees">
-        <h5 class="headingtoday">Registered Candidates</h5>
+      <div class="col-12 dashboard-header">
+        <h5 class="dashboard-title">Registered Candidates</h5>
       </div>
       <form method="GET" class="form-inline">
         
@@ -474,88 +520,158 @@ input[type="date"]:focus {
           
         
           <div class="row justify-content-between align-items-center mt-3">
+            <div class="col-md-6 d-flex justify-content-start align-items-center justify-content-start">
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="text" id="search-bar" style="height: 40px; margin-left: 40px;" name="search-bar" placeholder="Search..." class="mr-2">
+                <button type="submit" class="btn btn-primary" style="height: 40px;"><i class="fa fa-search"></i></button>
+                <!-- Add spacing between the search button and the Excel icon -->
+                <!-- Add a custom CSS class to the link and icon -->
+                <a href="{% url 'generate_excel' %}" class="ml-2 excel-link">
+                  <i class="fas fa-file-excel fa-lg"></i>
+                </a>
+              </div>
+            </div>
+            
+
+            <div class="col-md-3 text-center">
+              <button type="button" class="btn btn-primary" style="margin-left:32%"id="unlocked-users-btn" onclick="this.form.submit()">Unlocked Users</button>
+            </div>
+
             <div class="col-md-3 text-center">
               <button type="button" class="btn btn-primary" style="margin-left:18%" id="skipped-level-1-btn" onclick="this.form.submit()">Skipped Level 1 Users</button>
             </div>
           
-            <div class="col-md-3 text-center">
-              <button type="button" class="btn btn-primary" style="margin-left:32%"id="unlocked-users-btn" onclick="this.form.submit()">Unlocked Users</button>
-            </div>
           
-            <div class="col-md-6 d-flex justify-content-end align-items-center justify-content-end">
-              <div class="d-flex align-items-center justify-content-end">
-                <a href="{% url 'generate_excel' %}"><i class="fas fa-file-excel"></i></a>
-                <input type="text" id="search-bar" style="height:40px;margin-left:40px " name="search-bar" placeholder="Search..." class="mr-2">
-                <button type="submit" class="btn btn-primary" style="height:40px"><i class="fa fa-search"></i></button>
-              </div>
-            </div>
+            
+          </form>
           </div>
           
         
    
-      <div class="table-responsive"  style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top:20px;">
-      <table class="table table-bordered text-center" >
-        <thead class="sticky-thead">
-          <tr >
-            <th>S.No</th>
-            <th>Candidate Name</th>
-            <th>User id</th>
-            <th>Password</th>
-            <th>Applied for</th>
-            <th>Start time</th>
-            <th>End time</th>
-            <th>Remaning time</th>
-            <th>unlock <input type="checkbox" id="select-all-unlock"></th>
-            <th>skip level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
-          </tr>
-        </thead>
+          
+<div class="table-responsive" style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top: 20px;">
+  <table class="table table-bordered text-center">
+    <thead class="sticky-thead">
+      <tr>
+        <th>S.No</th>
+        <th>Candidate Name</th>
+        <th>User ID</th>
+        <th>Password</th>
+        <th>Applied for</th>
+        <th>Applied Date</th>
+        <!-- Other header columns (if any) -->
+        <th>Unlock <input type="checkbox" id="select-all-unlock"></th>
+        <th>Skip Level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      {% if candidate_data %}
+        {% for candidate in candidate_data %}
         <tr>
-        {% for candidate in page_obj%}
-            <td> </td>
-            <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{candidate.3}}</a></td>
-            <td>{{candidate.4}}</td>
-            <td>{{candidate.5}}</td>
-            <td>{{candidate.6}}</td>
-            <td>{{candidate.7}}</td>
-            <td>{{candidate.8}}</td>
-            <td>{{candidate.9}}</td>
-          {% if not candidate.10 %}
-          <td><input type="checkbox" class="row-checkbox" name="unlock" value="{{candidate.0}}"></td>
-          {% else %}
-          <td><img
-            src="{% static 'icons/check-circle-fill.svg' %}"
-            alt="Icon"
-          /></td>
-          {% endif %}
-          {% if not candidate.11 %}
-          <td><input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{candidate.0}}"></td>
-          {% else %}
-          <td><img
-            src="{% static 'icons/check-circle-fill.svg' %}"
-            alt="Icon" 
-          /></td>
-          {% endif %}
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="10">No candidates found.</td>
+          <td>{{ forloop.counter }}</td>
+          <td style="text-align: left;"><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
+          <td style="text-align: left;">{{ candidate.4 }}</td>
+          <td>{{ candidate.5 }}</td>
+          <td style="text-align: left;">{{ candidate.6 }}</td>
+          <td>{{ candidate.7 }}</td>
+          <!-- Other data columns (if any) -->
+          <td>
+            {% if not candidate.11 %}
+            <input type="checkbox" class="row-checkbox" name="unlock" value="{{ candidate.0 }}">
+            {% else %}
+            <img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" />
+            {% endif %}
+          </td>
+          <td>
+            {% if not candidate.12 %}
+            <input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{ candidate.0 }}">
+            {% else %}
+            <img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" />
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
-      </table>
-      <div class="pagination">
-        {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-        <div style="width:10px;"></div>
-        <span class="current-page">{{ page_obj.number }}</span>
-        <div style="width:10px;"></div>
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-        </div>
-    </div>  
-  </form>
+      {% else %}
+      <tr>
+        <td colspan="8">No candidates found.</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <div id="pagination">
+    <button id="prevBtn">&lt; Prev</button>
+    <span id="pageNumbers"></span>
+    <button id="nextBtn">Next &gt;</button>
+  </div>
+</div>
+                      
+
   <script>
+    
+   function paginateTable(pageSize) {
+    var table = document.querySelector('.table');
+    var tbody = table.querySelector('tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+
+    var currentPage = 1;
+    var totalPages = Math.ceil(rows.length / pageSize);
+
+    function showPage(page) {
+      currentPage = page;
+      var start = (currentPage - 1) * pageSize;
+      var end = start + pageSize;
+
+      rows.forEach(function (row, index) {
+        if (index >= start && index < end) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      updatePageNumbers();
+    }
+
+    function updatePageNumbers() {
+      var pageNumbers = document.getElementById('pageNumbers');
+      pageNumbers.textContent = currentPage + ' / ' + totalPages;
+    }
+
+    function goToPrevPage() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    }
+
+    function goToNextPage() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      }
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', goToPrevPage);
+    document.getElementById('nextBtn').addEventListener('click', goToNextPage);
+
+    // Initial check for empty table
+    if (rows.length === 0) {
+      var tableBody = document.getElementById('tableBody');
+      var emptyRow = document.createElement('tr');
+      var emptyData = document.createElement('td');
+      emptyData.setAttribute('colspan', '8');
+      emptyData.textContent = 'No candidates found.';
+      emptyRow.appendChild(emptyData);
+      tableBody.appendChild(emptyRow);
+
+      // Hide the pagination controls if the table is empty
+      var paginationDiv = document.getElementById('pagination');
+      paginationDiv.style.display = 'none';
+    } else {
+      showPage(1);
+    }
+  }
+
+  paginateTable(5); // Change the page size as needed
+    
     function getCookie(name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -633,6 +749,29 @@ input[type="date"]:focus {
       });
     
     });
+
+    // Get the current date
+  var currentDate = new Date();
+
+  // Check if the start_date is empty
+  if (!document.getElementById("StartDate").value) {
+    // Set the value of start_date to the current month's starting date
+    var currentMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    var year = currentMonthStartDate.getFullYear();
+    var month = (currentMonthStartDate.getMonth() + 1).toString().padStart(2, '0');
+    var day = "01";
+    var formattedStartDate = `${year}-${month}-${day}`;
+    document.getElementById("StartDate").value = formattedStartDate;
+  }
+
+  // Check if the end_date is empty
+  if (!document.getElementById("EndDate").value) {
+    // Set the value of end_date to the current date
+    var year = currentDate.getFullYear();
+    var month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    var day = currentDate.getDate().toString().padStart(2, '0');
+    var formattedEndDate = `${year}-${month}-${day}`;
+    document.getElementById("EndDate").value = formattedEndDate;
+  }
   </script>
   {% endblock content %}
-  

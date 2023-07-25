@@ -109,12 +109,12 @@ a:link {
             </div>
             <div class="card-body">
               <p class="mb-1"><strong class="pr-1">Candidate ID : </strong>{{candidate_data.0}}</p>
-              <p class="mb-1"><strong class="pr-1">Applied for : </strong>{{candidate_data.31 }}</p>
+              <p class="mb-1"><strong class="pr-1">Applied for : </strong>{{candidate_data.61 }}</p>
               <p class="mb-1"><strong class="pr-1">Email : </strong>{{ candidate_data.6 }}</p>
               <p class="mb-1"><strong class="pr-1">Date of Birth : </strong>{{ candidate_data.3 }}</p>
-              <p class="mb-1"><strong class="pr-1">Reffered by : </strong>{{ candidate_data.18 }}</p>
+              <p class="mb-1"><strong class="pr-1">Refered by : </strong>{{ candidate_data.18 }}</p>
               <p class="mb-1"><strong class="pr-1">Attended Prevesely : </strong><span>{% if  candidate_data.21 == 1 %}Yes{% else %}No{% endif %}</span></p>
-              <p class="mb-1"><strong class="pr-1">ID submitted : </strong>{{ candidate_data.50 }} </p>
+              <p class="mb-1"><strong class="pr-1">ID Submitted : </strong>{{ candidate_data.50 }} </p>
               <p class="mb-1"><strong class="pr-1">Applied Date : </strong>{{ candidate_data.22 }}</p>
             </div>
           </div>
@@ -221,7 +221,7 @@ a:link {
           {% if result_1 %}
           <div class="card shadow-sm my-3 mx-3 m-1">
             <div class="card-header bg-transparent border-0">
-              <h3 class="mb-1"></i>level 1</h3>
+              <h3 class="mb-1"></i>Level 1</h3>
             </div>
             <div class="card-body pt-0">
                 {% comment %} <p> Level {{level}}</p> {% endcomment %}
@@ -247,17 +247,17 @@ a:link {
           {% else %}
           <div class="card shadow-sm my-3 mx-3 m-1">
             <div class="card-header bg-transparent border-0">
-              <h3 class="mb-1"></i>level 1</h3>
+              <h3 class="mb-1"></i>Level 1</h3>
             </div>
             <div class="card-body pt-0">
-              <h5>level 1 not Attempted</h5>
+              <h5>Level 1 not Attempted</h5>
             </div>
           </div>
           {% endif %}
           {% if result_2 %}
           <div class="card shadow-sm mx-3 my-3 m-1" >
             <div class="card-header bg-transparent border-0">
-              <h3 class="mb-1"></i>level 2</h3>
+              <h3 class="mb-1"></i>Level 2</h3>
             </div>
             <div class="card-body pt-0">
                 {% comment %} <p> Level {{level}}</p> {% endcomment %}
@@ -283,10 +283,10 @@ a:link {
           {% else %}
           <div class="card shadow-sm my-3 mx-3 m-1 ">
             <div class="card-header bg-transparent border-0">
-              <h3 class="mb-1"></i>level 2</h3>
+              <h3 class="mb-1"></i>Level 2</h3>
             </div>
             <div class="card-body pt-0">
-              <h5>level 2 not Attempted</h5>
+              <h5>Level 2 not Attempted</h5>
             </div>
           </div>
           {% endif %}
@@ -294,7 +294,7 @@ a:link {
       </div>
       </div>
     </div>
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-left:50%; margin-top:10px;">Back</a>
+    <a href="{% url 'candidate_dashboard' %}" class="btn btn-secondary" style="margin-left:50%; margin-top:10px;">Back</a>
   </div>
 </body>
 <script>
